@@ -1,5 +1,6 @@
 package kr.co.itforone.forestmk_android;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -22,9 +23,10 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
         webView.setWebChromeClient(new SubChromeManager(this));
         webView.setWebViewClient(new SubViewManager(this));
-        webView.addJavascriptInterface(new WebviewJavainterface(this),"Android");
+        webView.addJavascriptInterface(new SubWebviewJavainterface(this),"Android");
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setAllowFileAccess(true);//웹에서 파일 접근 여부
         settings.setAppCacheEnabled(true);//캐쉬 사용여부
         settings.setDatabaseEnabled(true);//HTML5에서 db 사용여부 -> indexDB
@@ -35,9 +37,26 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
         webView.setLongClickable(true);
 
-        webView.loadUrl(getString(R.string.home));
+        Intent intent = getIntent();
+        String url = intent.getExtras().getString("subview_url");
 
+        if(url!=null && !url.isEmpty()){
+            webView.loadUrl(url);
+        }
+
+        else{
+
+        }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        if(webView.canGoBack()){
+            webView.goBack();
+        }
+        else {
+            super.onBackPressed();
+            overridePendingTransition(R.anim.stay, R.anim.fadeout);
+        }
+    }
 }

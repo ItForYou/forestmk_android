@@ -2,13 +2,16 @@ package kr.co.itforone.forestmk_android;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -17,8 +20,10 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -31,6 +36,7 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.webView)    WebView webView;
 
@@ -40,12 +46,11 @@ public class MainActivity extends AppCompatActivity {
     int flg_modal =0;
     private Location location;
     public Uri mImageCaptureUri,croppath;
-
+    static final int FILECHOOSER_LOLLIPOP_REQ_CODE=1300;
     static final int PERMISSION_REQUEST_CODE = 1;
     static final int CROP_FROM_ALBUM =2;
     static final int GET_ADDRESS =3;
     private LocationManager locationManager;
-
     long backPrssedTime =0;
     String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -95,16 +100,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
-        webView.setWebChromeClient(new ChromeManager(this, this));
+        if(hasPermissions(PERMISSIONS)) {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+
+        webView.setWebChromeClient(new ChromeManager(this,this));
         webView.setWebViewClient(new ViewManager(this, this));
         webView.addJavascriptInterface(new WebviewJavainterface(this, this),"Android");
         WebSettings settings = webView.getSettings();
+
         settings.setJavaScriptEnabled(true);
         settings.setAllowFileAccess(true);//웹에서 파일 접근 여부
         settings.setAppCacheEnabled(true);//캐쉬 사용여부
@@ -113,22 +126,22 @@ public class MainActivity extends AppCompatActivity {
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);//캐시 사용모드 LOAD_NO_CACHE는 캐시를 사용않는다는 뜻
         settings.setTextZoom(100);       // 폰트크기 고정
         ///settings.setUserAgentString(settings.getUserAgentString()+"//Brunei");
-
+        webView.setWebContentsDebuggingEnabled(true);
         webView.setLongClickable(true);
-
         webView.loadUrl(getString(R.string.home));
 
     }
 
     @Override
     public void onBackPressed() {
+
         if(webView.canGoBack()){
             webView.goBack();
         }
         else{
-            long tempTime = System.currentTimeMillis();
-            long intervalTime = tempTime - backPrssedTime;
-            if (0 <= intervalTime && 2000 >= intervalTime){
+                long tempTime = System.currentTimeMillis();
+                long intervalTime = tempTime - backPrssedTime;
+                if (0 <= intervalTime && 2000 >= intervalTime){
                 finish();
             }
             else
@@ -145,8 +158,14 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
+            //광고 글쓰기 주소 검색
             case GET_ADDRESS:
-                   Toast.makeText(getApplicationContext(),"get_addr", Toast.LENGTH_LONG).show();
+                    if(resultCode==33) {
+                        String data_address12 = data.getStringExtra("address12");
+                        String data_address11 = data.getStringExtra("address11");
+                        webView.loadUrl("javascript:set_wr12('" + data_address12 + "','"+data_address11+"')");
+                    }
+                   //Toast.makeText(getApplicationContext(),"get_addr", Toast.LENGTH_LONG).show();
                 break;
             case ChromeManager.FILECHOOSER_LOLLIPOP_REQ_CODE:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

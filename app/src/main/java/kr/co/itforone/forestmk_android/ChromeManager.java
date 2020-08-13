@@ -41,7 +41,7 @@ class ChromeManager extends WebChromeClient {
     }
 
     @Override
-    public boolean onJsAlert(WebView view, String url, String message, final android.webkit.JsResult result) {
+    public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
         new AlertDialog.Builder(view.getContext())
                 .setTitle("")
                 .setMessage(message)

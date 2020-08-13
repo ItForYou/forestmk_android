@@ -1,15 +1,25 @@
 package kr.co.itforone.forestmk_android;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+
+import java.util.Arrays;
+
 
 class ViewManager extends WebViewClient {
 
     Activity context;
     MainActivity mainActivity;
+    String [] motion_page = {"category.php", ""};
 
     public ViewManager(Activity context, MainActivity mainActivity) {
         this.context = context;
@@ -19,27 +29,39 @@ class ViewManager extends WebViewClient {
     public ViewManager() {
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        // Toast.makeText(mainActivity.getApplicationContext(),mainActivity.webView.getUrl(),Toast.LENGTH_LONG).show();
-        view.loadUrl(url);
-        return true;
+           // Toast.makeText(mainActivity.getApplicationContext(),"test-"+url, Toast.LENGTH_LONG).show();
+      if(url.contains("category.php") || url.contains("recent_list.php") || url.contains("mypage.php") ||  (url.contains("board.php")&&!url.contains("wr_id"))) {
+          Intent intent = new Intent(mainActivity, SubWebveiwActivity.class);
+          intent.putExtra("subview_url", url);
+          mainActivity.startActivity(intent);
+          mainActivity.overridePendingTransition(R.anim.fadein, R.anim.stay);
+          return true;
+      }
+      else {
+         view.loadUrl(url);
+          // Toast.makeText(mainActivity.getApplicationContext(),mainActivity.webView.getUrl(),Toast.LENGTH_LONG).show();
+          return false;
+      }
     }
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
         super.onPageStarted(view, url, favicon);
         // mainActivity.dialogloading.show();
-
     }
 
     @Override
     public void onPageFinished(WebView view, String url) {
-
         super.onPageFinished(view, url);
         view.loadUrl("javascript:setToken('"+mainActivity.token+"')");
 
     }
-
+    private void animate(final WebView view) {
+        Animation anim = AnimationUtils.loadAnimation(mainActivity.getApplicationContext(),
+                android.R.anim.fade_in);
+        view.startAnimation(anim);
+    }
 }

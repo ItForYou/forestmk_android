@@ -4,6 +4,7 @@ package kr.co.itforone.forestmk_android;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
@@ -21,6 +22,15 @@ class WebviewJavainterface {
     }
 
     @JavascriptInterface
+    public void call(String number) {
+
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + number));
+        mainActivity.startActivity(intent);
+
+    }
+
+    @JavascriptInterface
     public void sharelink() {
         Intent intent = new Intent(android.content.Intent.ACTION_SEND);
         intent.setType("text/plain");
@@ -31,8 +41,9 @@ class WebviewJavainterface {
 
     @JavascriptInterface
     public void get_Address() {
-        Intent intent = new Intent(mainActivity, SubWebveiwActivity.class);
-        intent.putExtra("subview_url", "");
+        //Toast.makeText(mainActivity.getApplicationContext(),"get_Address",Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(mainActivity.getApplicationContext(), SubWebveiwActivity.class);
+        intent.putExtra("subview_url", mainActivity.getString(R.string.address));
         mainActivity.startActivityForResult(intent, 3);
     }
 
@@ -61,7 +72,7 @@ class WebviewJavainterface {
     @JavascriptInterface
     public void getlocation() {
 
-      /*  double lat = mainActivity.getlat() * 1000000;
+        double lat = mainActivity.getlat() * 1000000;
         double lng = mainActivity.getlng() * 1000000;
         lat = Math.ceil(lat) / 1000000;
         lng = Math.ceil(lng) / 1000000;
@@ -76,9 +87,9 @@ class WebviewJavainterface {
                     mainActivity.webView.loadUrl("javascript:sort_distance('" + finalLat + "','" + finalLng + "');");
             }
         });
-        // Toast.makeText(mainActivity.getApplicationContext(),""+lat+" , "+lng, Toast.LENGTH_LONG).show();
+         Toast.makeText(mainActivity.getApplicationContext(),""+lat+" , "+lng, Toast.LENGTH_LONG).show();
 
-       */
+
     }
 
     @JavascriptInterface
