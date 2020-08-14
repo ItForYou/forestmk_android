@@ -7,14 +7,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 class SubViewManager extends WebViewClient {
-    Activity context;
+    SubWebveiwActivity context;
     MainActivity mainActivity;
 
-    public SubViewManager(Activity context, MainActivity mainActivity) {
+    public SubViewManager(SubWebveiwActivity context, MainActivity mainActivity) {
         this.context = context;
         this.mainActivity = mainActivity;
     }
-    public SubViewManager(Activity context) {
+    public SubViewManager(SubWebveiwActivity context) {
         this.context = context;
     }
 
@@ -32,8 +32,10 @@ class SubViewManager extends WebViewClient {
             return true;
         }
         else {
-            view.loadUrl(url);
-            // Toast.makeText(mainActivity.getApplicationContext(),mainActivity.webView.getUrl(),Toast.LENGTH_LONG).show();
+            //Toast.makeText(mainActivity.getApplicationContext(),"view"+String.valueOf(mainActivity.flg_alert), Toast.LENGTH_LONG).show();
+            if(context.flg_alert!=1)
+                view.loadUrl(url);
+            context.flg_alert=0;
             return false;
         }
     }

@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     static final int CROP_FROM_ALBUM =2;
     static final int GET_ADDRESS =3;
     private LocationManager locationManager;
+    int flg_alert = 0;
     long backPrssedTime =0;
     String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -135,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+
+
         if(webView.canGoBack()){
             webView.goBack();
         }
@@ -150,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누를시 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
     @Override
@@ -283,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
     public void set_filePathCallbackLollipop(ValueCallback<Uri[]> filePathCallbackLollipop){
         this.filePathCallbackLollipop = filePathCallbackLollipop;
     }
+
     public double getlat(){
         //Toast.makeText(getApplicationContext(),""+location.getLatitude() + "//" +location.getLongitude(),Toast.LENGTH_LONG).show();
         if(location!=null) {
@@ -290,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else return 0;
     }
+
     public double getlng(){
         //Toast.makeText(getApplicationContext(),""+location.getLatitude() + "//" +location.getLongitude(),Toast.LENGTH_LONG).show();
         if(location!=null) {
@@ -298,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
         else return 0;
 
     }
+
     public void Norefresh(){
       //  refreshlayout.setEnabled(false);
     }

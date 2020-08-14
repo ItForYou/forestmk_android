@@ -33,6 +33,7 @@ class ViewManager extends WebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
            // Toast.makeText(mainActivity.getApplicationContext(),"test-"+url, Toast.LENGTH_LONG).show();
+
       if(url.contains("category.php") || url.contains("recent_list.php") || url.contains("mypage.php") ||  (url.contains("board.php")&&!url.contains("wr_id"))) {
           Intent intent = new Intent(mainActivity, SubWebveiwActivity.class);
           intent.putExtra("subview_url", url);
@@ -40,11 +41,16 @@ class ViewManager extends WebViewClient {
           mainActivity.overridePendingTransition(R.anim.fadein, R.anim.stay);
           return true;
       }
+
       else {
-         view.loadUrl(url);
-          // Toast.makeText(mainActivity.getApplicationContext(),mainActivity.webView.getUrl(),Toast.LENGTH_LONG).show();
+
+          //Toast.makeText(mainActivity.getApplicationContext(),"view"+String.valueOf(mainActivity.flg_alert), Toast.LENGTH_LONG).show();
+          if(mainActivity.flg_alert!=1)
+          view.loadUrl(url);
+          mainActivity.flg_alert=0;
           return false;
       }
+
     }
 
     @Override
@@ -57,8 +63,8 @@ class ViewManager extends WebViewClient {
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
         view.loadUrl("javascript:setToken('"+mainActivity.token+"')");
-
     }
+
     private void animate(final WebView view) {
         Animation anim = AnimationUtils.loadAnimation(mainActivity.getApplicationContext(),
                 android.R.anim.fade_in);

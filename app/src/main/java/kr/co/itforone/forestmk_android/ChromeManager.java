@@ -9,6 +9,7 @@ import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 class ChromeManager extends WebChromeClient {
 
@@ -42,6 +43,11 @@ class ChromeManager extends WebChromeClient {
 
     @Override
     public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
+
+        // Toast.makeText(mainActivity.getApplicationContext(),"chrome"+String.valueOf(mainActivity.flg_alert), Toast.LENGTH_LONG).show();
+
+        mainActivity.flg_alert=1;
+
         new AlertDialog.Builder(view.getContext())
                 .setTitle("")
                 .setMessage(message)
@@ -59,6 +65,9 @@ class ChromeManager extends WebChromeClient {
 
     @Override
     public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+
+      //mainActivity.flg_alert=1;
+
         new AlertDialog.Builder(view.getContext())
                 .setTitle("")
                 .setMessage(message)

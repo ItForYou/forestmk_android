@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+
 class WebviewJavainterface {
     Activity activity;
     MainActivity mainActivity;
@@ -29,6 +31,14 @@ class WebviewJavainterface {
         mainActivity.startActivity(intent);
 
     }
+
+    @JavascriptInterface
+    public void show_snackbar(String message) {
+
+        Snackbar.make(mainActivity.getCurrentFocus(), message,Snackbar.LENGTH_LONG).show();
+
+    }
+
 
     @JavascriptInterface
     public void sharelink() {

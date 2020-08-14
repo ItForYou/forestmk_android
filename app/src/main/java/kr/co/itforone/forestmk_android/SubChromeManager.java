@@ -13,15 +13,15 @@ import android.webkit.WebView;
 class SubChromeManager extends WebChromeClient {
 
     private final int MY_PERMISSIONS_REQUEST_CAMERA=1001;
-    Activity activity;
+    SubWebveiwActivity activity;
     MainActivity mainActivity;
     static final int FILECHOOSER_LOLLIPOP_REQ_CODE=1300;
 
-    public SubChromeManager(Activity activity, MainActivity mainActivity) {
+    public SubChromeManager(SubWebveiwActivity activity, MainActivity mainActivity) {
         this.activity = activity;
         this.mainActivity = mainActivity;
     }
-    public SubChromeManager(Activity activity) {
+    public SubChromeManager(SubWebveiwActivity activity) {
         this.activity = activity;
     }
     public SubChromeManager() {
@@ -29,7 +29,7 @@ class SubChromeManager extends WebChromeClient {
 
     @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-        mainActivity.set_filePathCallbackLollipop(filePathCallback);
+        activity.set_filePathCallbackLollipop(filePathCallback);
 
 //        Intent i = new Intent();
 //        i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -41,12 +41,13 @@ class SubChromeManager extends WebChromeClient {
 
         Intent i = new Intent(Intent.ACTION_PICK);
         i. setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-        mainActivity.startActivityForResult(i, FILECHOOSER_LOLLIPOP_REQ_CODE);
+        activity.startActivityForResult(i, FILECHOOSER_LOLLIPOP_REQ_CODE);
         return true;
     }
 
     @Override
     public boolean onJsAlert(WebView view, String url, String message, final android.webkit.JsResult result) {
+        activity.flg_alert =1;
         new AlertDialog.Builder(view.getContext())
                 .setTitle("")
                 .setMessage(message)
