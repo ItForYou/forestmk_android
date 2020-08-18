@@ -15,6 +15,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -23,11 +25,15 @@ import android.os.Bundle;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
+import android.view.View;
+import android.view.Window;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -51,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     static final int CROP_FROM_ALBUM =2;
     static final int GET_ADDRESS =3;
     private LocationManager locationManager;
+    private EndDialog mEndDialog;
     int flg_alert = 0;
     long backPrssedTime =0;
     String[] PERMISSIONS = {
@@ -142,7 +149,21 @@ public class MainActivity extends AppCompatActivity {
             webView.goBack();
         }
         else{
-                long tempTime = System.currentTimeMillis();
+            //종료 다이얼로그 창
+            mEndDialog = new EndDialog(this);
+            mEndDialog.setCancelable(false);
+            mEndDialog.show();
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+            Window window = mEndDialog.getWindow();
+            int x = (int)(size.x * 0.8f);
+            int y = (int)(size.y* 0.45f);
+
+            window.setLayout(x,y);
+
+           /*     long tempTime = System.currentTimeMillis();
                 long intervalTime = tempTime - backPrssedTime;
                 if (0 <= intervalTime && 2000 >= intervalTime){
                 finish();
@@ -151,8 +172,23 @@ public class MainActivity extends AppCompatActivity {
             {
                 backPrssedTime = tempTime;
                 Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누를시 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
-            }
+            }*/
+
+
+
+
         }
+    }
+
+
+    public void click_dialogN(View view){
+      //  Toast.makeText(mContext.getApplicationContext(),"test",Toast.LENGTH_LONG).show();
+        mEndDialog.dismiss();
+    }
+
+    public void click_dialogY(View view){
+    //    Toast.makeText(mContext.getApplicationContext(),"test2",Toast.LENGTH_LONG).show();
+          finish();
     }
 
     @Override

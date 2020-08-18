@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.Toast;
 
 class ChromeManager extends WebChromeClient {
@@ -47,19 +49,35 @@ class ChromeManager extends WebChromeClient {
         // Toast.makeText(mainActivity.getApplicationContext(),"chrome"+String.valueOf(mainActivity.flg_alert), Toast.LENGTH_LONG).show();
 
         mainActivity.flg_alert=1;
+//
+//        new AlertDialog.Builder(view.getContext())
+//                .setTitle("")
+//                .setMessage(message)
+//                .setPositiveButton(android.R.string.ok,
+//                        new AlertDialog.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                result.confirm();
+//                            }
+//                        })
+//                .setCancelable(false)
+//                .create()
+//                .show();
 
-        new AlertDialog.Builder(view.getContext())
-                .setTitle("")
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok,
-                        new AlertDialog.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                result.confirm();
-                            }
-                        })
-                .setCancelable(false)
-                .create()
-                .show();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        builder.setTitle("");
+        builder.setMessage(message);
+        builder.setPositiveButton("확인",   new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                result.confirm();
+            }
+        });
+        builder.setCancelable(false);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setTextColor(Color.parseColor("#9dc543"));
+
         return true;
     }
 
@@ -68,7 +86,7 @@ class ChromeManager extends WebChromeClient {
 
       //mainActivity.flg_alert=1;
 
-        new AlertDialog.Builder(view.getContext())
+        /*new AlertDialog.Builder(view.getContext(),R.style.MyAlertDialogStyle)
                 .setTitle("")
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok,
@@ -86,7 +104,44 @@ class ChromeManager extends WebChromeClient {
                         })
                 .setCancelable(false)
                 .create()
-                .show();
+                .show();*/
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        // Set a title for alert dialog
+        builder.setTitle("");
+
+        // Show a message on alert dialog
+        builder.setMessage(message);
+
+        // Set the positive button
+        builder.setPositiveButton("확인",   new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                result.confirm();
+            }
+        });
+
+        // Set the negative button
+        builder.setNegativeButton("취소",  new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                result.cancel();
+            }
+        });
+        builder.setCancelable(false);
+        // Create the alert dialog
+        AlertDialog dialog = builder.create();
+        // Finally, display the alert dialog
+        dialog.show();
+
+        // Get the alert dialog buttons reference
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+        // Change the alert dialog buttons text and background color
+        positiveButton.setTextColor(Color.parseColor("#9dc543"));
+
+        negativeButton.setTextColor(Color.parseColor("#ff0000"));
+
         return true;
     }
 }

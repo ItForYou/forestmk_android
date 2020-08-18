@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,13 +25,14 @@ import butterknife.ButterKnife;
 
 public class SubWebveiwActivity extends AppCompatActivity {
 
-    @BindView(R.id.subWebview)    WebView webView;
+    @BindView(R.id.subWebview)    public WebView webView;
     int flg_alert =0;
     ValueCallback<Uri[]> filePathCallbackLollipop;
     static final int FILECHOOSER_LOLLIPOP_REQ_CODE=1300;
     static final int PERMISSION_REQUEST_CODE = 1;
     static final int CROP_FROM_ALBUM =2;
     static final int GET_ADDRESS =3;
+    private Location location;
     public Uri mImageCaptureUri,croppath;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -196,6 +198,23 @@ public class SubWebveiwActivity extends AppCompatActivity {
                     }
                 }
         }
+    }
+
+    public double getlat(){
+        //Toast.makeText(getApplicationContext(),""+location.getLatitude() + "//" +location.getLongitude(),Toast.LENGTH_LONG).show();
+        if(location!=null) {
+            return location.getLatitude();
+        }
+        else return 0;
+    }
+
+    public double getlng(){
+        //Toast.makeText(getApplicationContext(),""+location.getLatitude() + "//" +location.getLongitude(),Toast.LENGTH_LONG).show();
+        if(location!=null) {
+            return location.getLongitude();
+        }
+        else return 0;
+
     }
 
     @Override

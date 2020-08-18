@@ -32,7 +32,7 @@ class ViewManager extends WebViewClient {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-           // Toast.makeText(mainActivity.getApplicationContext(),"test-"+url, Toast.LENGTH_LONG).show();
+            Toast.makeText(mainActivity.getApplicationContext(),"test-"+url, Toast.LENGTH_LONG).show();
 
       if(url.contains("category.php") || url.contains("recent_list.php") || url.contains("mypage.php") ||  (url.contains("board.php")&&!url.contains("wr_id"))) {
           Intent intent = new Intent(mainActivity, SubWebveiwActivity.class);
@@ -49,6 +49,7 @@ class ViewManager extends WebViewClient {
           view.loadUrl(url);
           mainActivity.flg_alert=0;
           return false;
+
       }
 
     }

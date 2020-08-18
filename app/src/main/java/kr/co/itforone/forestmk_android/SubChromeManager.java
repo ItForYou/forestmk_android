@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.Button;
 
 class SubChromeManager extends WebChromeClient {
 
@@ -48,7 +50,7 @@ class SubChromeManager extends WebChromeClient {
     @Override
     public boolean onJsAlert(WebView view, String url, String message, final android.webkit.JsResult result) {
         activity.flg_alert =1;
-        new AlertDialog.Builder(view.getContext())
+/*        new AlertDialog.Builder(view.getContext())
                 .setTitle("")
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok,
@@ -59,31 +61,80 @@ class SubChromeManager extends WebChromeClient {
                         })
                 .setCancelable(false)
                 .create()
-                .show();
+                .show();*/
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        builder.setTitle("");
+        builder.setMessage(message);
+        builder.setPositiveButton("확인",   new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                result.confirm();
+            }
+        });
+        builder.setCancelable(false);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setTextColor(Color.parseColor("#9dc543"));
         return true;
     }
 
     @Override
     public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
-        new AlertDialog.Builder(view.getContext())
-                .setTitle("")
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                result.confirm();
-                            }
-                        })
-                .setNegativeButton(android.R.string.cancel,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                result.cancel();
-                            }
-                        })
-                .setCancelable(false)
-                .create()
-                .show();
+//        new AlertDialog.Builder(view.getContext())
+//                .setTitle("")
+//                .setMessage(message)
+//                .setPositiveButton(android.R.string.ok,
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                result.confirm();
+//                            }
+//                        })
+//                .setNegativeButton(android.R.string.cancel,
+//                        new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                result.cancel();
+//                            }
+//                        })
+//                .setCancelable(false)
+//                .create()
+//                .show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        // Set a title for alert dialog
+        builder.setTitle("");
+
+        // Show a message on alert dialog
+        builder.setMessage(message);
+
+        // Set the positive button
+        builder.setPositiveButton("확인",   new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                result.confirm();
+            }
+        });
+
+        // Set the negative button
+        builder.setNegativeButton("취소",  new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                result.cancel();
+            }
+        });
+        builder.setCancelable(false);
+        // Create the alert dialog
+        AlertDialog dialog = builder.create();
+        // Finally, display the alert dialog
+        dialog.show();
+
+        // Get the alert dialog buttons reference
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+        // Change the alert dialog buttons text and background color
+        positiveButton.setTextColor(Color.parseColor("#9dc543"));
+
+        negativeButton.setTextColor(Color.parseColor("#ff0000"));
+
         return true;
     }
 }

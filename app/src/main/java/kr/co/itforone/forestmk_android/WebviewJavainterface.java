@@ -15,16 +15,20 @@ class WebviewJavainterface {
     MainActivity mainActivity;
 
     public WebviewJavainterface(Activity activity, MainActivity mainActivity){
+
         this.mainActivity = mainActivity;
         this.activity=activity;
+
     }
+
     public WebviewJavainterface(Activity activity){
 
         this.activity=activity;
+
     }
 
     @JavascriptInterface
-    public void call(String number) {
+    public void call(String number){
 
         Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + number));
@@ -33,12 +37,12 @@ class WebviewJavainterface {
     }
 
     @JavascriptInterface
-    public void show_snackbar(String message) {
+    public void show_snackbar(String message){
 
-        Snackbar.make(mainActivity.getCurrentFocus(), message,Snackbar.LENGTH_LONG).show();
+            Toast.makeText(mainActivity.getApplicationContext(),message, Toast.LENGTH_LONG).show();
+       // Snackbar.make(mainActivity.getCurrentFocus(), message,Snackbar.LENGTH_LONG).show();
 
     }
-
 
     @JavascriptInterface
     public void sharelink() {
@@ -51,10 +55,12 @@ class WebviewJavainterface {
 
     @JavascriptInterface
     public void get_Address() {
+
         //Toast.makeText(mainActivity.getApplicationContext(),"get_Address",Toast.LENGTH_LONG).show();
         Intent intent = new Intent(mainActivity.getApplicationContext(), SubWebveiwActivity.class);
         intent.putExtra("subview_url", mainActivity.getString(R.string.address));
         mainActivity.startActivityForResult(intent, 3);
+
     }
 
     @JavascriptInterface
