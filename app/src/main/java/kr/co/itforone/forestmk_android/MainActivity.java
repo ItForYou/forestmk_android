@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -27,6 +28,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
@@ -45,7 +47,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.webView)    WebView webView;
-
+    @BindView(R.id.refreshlayout)    SwipeRefreshLayout refreshlayout;
     String token = "";
     public int flg_refresh = 1;
     ValueCallback<Uri[]> filePathCallbackLollipop;
@@ -114,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        Intent splash = new Intent(MainActivity.this,SplashActivity.class);
+        startActivity(splash);
+
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
         if(hasPermissions(PERMISSIONS)) {
@@ -137,6 +143,30 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebContentsDebuggingEnabled(true);
         webView.setLongClickable(true);
         webView.loadUrl(getString(R.string.home));
+
+        refreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                webView.clearCache(true);
+                webView.reload();
+                refreshlayout.setRefreshing(false);
+            }
+
+        });
+
+        refreshlayout.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+
+                if(webView.getScrollY() == 0 && flg_refresh ==1){
+                    refreshlayout.setEnabled(true);
+                }
+                else{
+                    refreshlayout.setEnabled(false);
+                }
+            }
+        });
 
     }
 
