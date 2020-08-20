@@ -12,6 +12,7 @@ import butterknife.ButterKnife;
 
 public class EndDialog extends Dialog {
     private MainActivity mContext;
+
     public EndDialog(@NonNull MainActivity context) {
         super(context);
         mContext = context;
@@ -19,6 +20,7 @@ public class EndDialog extends Dialog {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_exit);
         ButterKnife.bind(this);

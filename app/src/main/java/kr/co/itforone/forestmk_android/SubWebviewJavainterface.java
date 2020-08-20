@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 
 class SubWebviewJavainterface {
+
     SubWebveiwActivity activity;
     MainActivity mainActivity;
 
@@ -76,6 +77,24 @@ class SubWebviewJavainterface {
     }
 
     @JavascriptInterface
+    public void setLogininfo(String id,String password) {
+        SharedPreferences pref = mainActivity.getSharedPreferences("logininfo", mainActivity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("id",id);
+        editor.putString("pwd",password);
+        editor.commit();
+    }
+
+    @JavascriptInterface
+    public void setlogout() {
+       // Toast.makeText(activity.getApplicationContext(),"logout",Toast.LENGTH_LONG).show();
+        SharedPreferences pref = activity.getSharedPreferences("logininfo", mainActivity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.commit();
+    }
+
+    @JavascriptInterface
     public void back_pressed() {
 
         activity.webView.post(new Runnable() {
@@ -90,4 +109,5 @@ class SubWebviewJavainterface {
         Toast.makeText(activity.getApplicationContext(),text, Toast.LENGTH_LONG).show();
         //Snackbar.make(activity.getCurrentFocus(), text,Snackbar.LENGTH_LONG).show();
     }
+
 }

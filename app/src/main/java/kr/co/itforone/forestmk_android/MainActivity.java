@@ -14,6 +14,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -80,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d("per_result",String.valueOf(result));
         if (result == PackageManager.PERMISSION_GRANTED) {
             return true;
-
         }else {
             return false;
         }
@@ -113,12 +113,11 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        Intent splash = new Intent(MainActivity.this,SplashActivity.class);
-        startActivity(splash);
 
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
@@ -142,7 +141,21 @@ public class MainActivity extends AppCompatActivity {
         ///settings.setUserAgentString(settings.getUserAgentString()+"//Brunei");
         webView.setWebContentsDebuggingEnabled(true);
         webView.setLongClickable(true);
-        webView.loadUrl(getString(R.string.home));
+
+        SharedPreferences pref = getSharedPreferences("logininfo", MODE_PRIVATE);
+        String id = pref.getString("id", "");
+        String pwd = pref.getString("pwd", "");
+
+       // Toast.makeText(getApplicationContext(),id+"-"+pwd,Toast.LENGTH_LONG).show();
+
+        if(!id.isEmpty() && !pwd.isEmpty()){
+            webView.loadUrl(getString(R.string.login)+"mb_id="+id+"&mb_password="+pwd);
+         //   webView.clearCache(true);
+         //   webView.clearHistory();
+        }
+        else {
+            webView.loadUrl(getString(R.string.home));
+        }
 
         refreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
@@ -165,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     refreshlayout.setEnabled(false);
                 }
+
             }
         });
 
@@ -173,11 +187,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-
-
         if(webView.canGoBack()){
             webView.goBack();
         }
+
         else{
             //종료 다이얼로그 창
             mEndDialog = new EndDialog(this);
@@ -203,10 +216,6 @@ public class MainActivity extends AppCompatActivity {
                 backPrssedTime = tempTime;
                 Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누를시 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
             }*/
-
-
-
-
         }
     }
 
@@ -264,8 +273,7 @@ public class MainActivity extends AppCompatActivity {
                                 startActivityForResult(intent, CROP_FROM_ALBUM);
                             } catch (ActivityNotFoundException e) {
                                 String errorMessage = "your device doesn't support the crop action!";
-                                Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-                                toast.show();
+                                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
                             }
 //                        if (clipData != null) {
 //                            result = new Uri[clipData.getItemCount()];
@@ -370,10 +378,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Norefresh(){
-      //  refreshlayout.setEnabled(false);
+        refreshlayout.setEnabled(false);
     }
     public void Yesrefresh(){
-      //  refreshlayout.setEnabled(true);
+        refreshlayout.setEnabled(true);
     }
 
 }

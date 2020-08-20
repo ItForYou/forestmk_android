@@ -74,6 +74,7 @@ class WebviewJavainterface {
 
     @JavascriptInterface
     public void setlogout() {
+     //   Toast.makeText(mainActivity.getApplicationContext(),"logout",Toast.LENGTH_LONG).show();
         SharedPreferences pref = mainActivity.getSharedPreferences("logininfo", mainActivity.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.clear();

@@ -55,14 +55,15 @@ public class SubWebveiwActivity extends AppCompatActivity {
         ///settings.setUserAgentString(settings.getUserAgentString()+"//Brunei");
 
         webView.setLongClickable(true);
-
+        String url="";
         Intent intent = getIntent();
-        String url = intent.getExtras().getString("subview_url");
+        if(intent!=null) {
+            url = intent.getExtras().getString("subview_url");
+        }
 
         if(url!=null && !url.isEmpty()){
             webView.loadUrl(url);
         }
-
         else{
 
         }
