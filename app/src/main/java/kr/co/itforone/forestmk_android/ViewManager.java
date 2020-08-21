@@ -41,6 +41,7 @@ class ViewManager extends WebViewClient {
           mainActivity.overridePendingTransition(R.anim.fadein, R.anim.stay);
           return true;
       }
+      //로그인, 글쓰기, 회원가입, 정보수정 뒤로가기 처리
       else {
 
           //Toast.makeText(mainActivity.getApplicationContext(),"view"+String.valueOf(mainActivity.flg_alert), Toast.LENGTH_LONG).show();
@@ -63,6 +64,9 @@ class ViewManager extends WebViewClient {
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
        // view.loadUrl("javascript:setToken('"+mainActivity.token+"')");
+       if(url.contains("login_check.php") || url.contains("write_update.php") || url.contains("register_form_update.php")){
+            mainActivity.webView.goBack();
+        }
     }
 
     private void animate(final WebView view) {

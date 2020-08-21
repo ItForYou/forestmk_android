@@ -20,8 +20,10 @@ public class SplashActivity extends AppCompatActivity {
             //    finish();
                 Intent main = new Intent(SplashActivity.this,MainActivity.class);
                 startActivity(main);
+                finish();
             }
         }, SPLASH_DISPLAY_LENGTH);
+
     }
 }
 
