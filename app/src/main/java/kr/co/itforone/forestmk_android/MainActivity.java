@@ -34,6 +34,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     static final int GET_ADDRESS =3;
     private LocationManager locationManager;
     private EndDialog mEndDialog;
-    int flg_alert = 0, flg_confirm=0, flg_modal=0;
+    int flg_alert = 0, flg_confirm=0, flg_modal=0,flg_sortmodal=0;
     long backPrssedTime =0;
     String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -189,8 +190,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        //Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
-        if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2))){
+
+        /*WebBackForwardList list = null;
+        String backurl ="";
+
+        try{
+            list = webView.copyBackForwardList();
+            if(list.getSize() >1 ){
+                backurl = list.getItemAtIndex(list.getCurrentIndex() - 1).getUrl();
+               // Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
+
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }*/
+
+        if (flg_modal==1 && (webView.getUrl().equals(getString(R.string.home))|| webView.getUrl().equals(getString(R.string.home2)))){
+            webView.loadUrl("javascript:close_writemd()");
+        }
+        else if (flg_sortmodal!=0 && (webView.getUrl().contains("bo_table=deal") || webView.getUrl().equals(getString(R.string.home2)))){
+            webView.loadUrl("javascript:close_sortmd("+flg_sortmodal+")");
+        }
+       else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2))){
             mEndDialog = new EndDialog(MainActivity.this);
             mEndDialog.setCancelable(true);
             mEndDialog.show();
@@ -203,6 +224,10 @@ public class MainActivity extends AppCompatActivity {
             int y = (int)(size.y* 0.45f);
 
             window.setLayout(x,y);
+        }
+        else if(webView.getUrl().contains("refer_c=1")){
+            webView.loadUrl(getString(R.string.home));
+            webView.clearCache(true);
         }
 
        else if(webView.getUrl().contains("write.php")){
@@ -220,7 +245,6 @@ public class MainActivity extends AppCompatActivity {
 
             // Show a message on alert dialog
             builder.setMessage(message);
-
             // Set the positive button
             builder.setPositiveButton("확인",   new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
@@ -287,16 +311,16 @@ public class MainActivity extends AppCompatActivity {
 
             window.setLayout(x,y);
 
-           /*     long tempTime = System.currentTimeMillis();
-                long intervalTime = tempTime - backPrssedTime;
-                if (0 <= intervalTime && 2000 >= intervalTime){
-                finish();
-            }
-            else
-            {
-                backPrssedTime = tempTime;
-                Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누를시 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
-            }*/
+//                long tempTime = System.currentTimeMillis();
+//                long intervalTime = tempTime - backPrssedTime;
+//                if (0 <= intervalTime && 2000 >= intervalTime){
+//                finish();
+//            }
+//            else
+//            {
+//                backPrssedTime = tempTime;
+//                Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누를시 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
+//            }
         }
     }
 

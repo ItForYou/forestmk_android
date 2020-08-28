@@ -19,7 +19,6 @@ class ViewManager extends WebViewClient {
 
     Activity context;
     MainActivity mainActivity;
-    String [] motion_page = {"category.php", ""};
 
     public ViewManager(Activity context, MainActivity mainActivity) {
         this.context = context;

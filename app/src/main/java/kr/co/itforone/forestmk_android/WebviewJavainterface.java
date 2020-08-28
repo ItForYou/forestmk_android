@@ -87,6 +87,11 @@ class WebviewJavainterface {
     }
 
     @JavascriptInterface
+    public void setflgmodal2(int i) {
+        mainActivity.flg_sortmodal=i;
+    }
+
+    @JavascriptInterface
     public void getlocation() {
 
         double lat = mainActivity.getlat() * 1000000;

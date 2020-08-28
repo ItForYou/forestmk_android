@@ -116,6 +116,15 @@ class SubWebviewJavainterface {
         //Toast.makeText(activity.getApplicationContext(),text, Toast.LENGTH_LONG).show();
         Snackbar.make(activity.getCurrentFocus(), text,Snackbar.LENGTH_LONG).show();
     }
+    @JavascriptInterface
+    public void setflgmodal2(int i) {
+        activity.flg_sortmodal=i;
+
+    }
+    @JavascriptInterface
+    public void setflgmodal(int i) {
+        mainActivity.flg_modal=i;
+    }
 
     @JavascriptInterface
     public void NoRefresh(){

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.webkit.ValueCallback;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -37,7 +38,7 @@ import butterknife.ButterKnife;
 public class SubWebveiwActivity extends AppCompatActivity {
     @BindView(R.id.sub_refreshlayout)   SwipeRefreshLayout subrefreshlayout;
     @BindView(R.id.subWebview)    public WebView webView;
-    int flg_alert =0,flg_confirm=0;
+    int flg_alert =0,flg_confirm=0,flg_modal =0,flg_sortmodal=0;
     public int flg_refresh = 1;
     private ActivityManager am = ActivityManager.getInstance();
     Dialog current_dialog;
@@ -272,9 +273,29 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        WebBackForwardList list = null;
+        String backurl ="";
+
+   /*     try{
+            list = webView.copyBackForwardList();
+            if(list.getSize() >1 ){
+                backurl = list.getItemAtIndex(list.getCurrentIndex() - 1).getUrl();
+                Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
+                return;
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+*/
+        if (flg_modal==1 && (webView.getUrl().equals(getString(R.string.home))|| webView.getUrl().equals(getString(R.string.home2)))){
+            webView.loadUrl("javascript:close_writemd()");
+        }
+       else if (flg_sortmodal!=0 && (webView.getUrl().contains("bo_table=deal") || webView.getUrl().equals(getString(R.string.home2)))){
+            webView.loadUrl("javascript:close_sortmd("+flg_sortmodal+")");
+        }
         //if(webView.getUrl().equals(getString(R.string.home)))
         //Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
-        if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2))){
+        else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2))){
             mEndDialog = new EndDialog(SubWebveiwActivity.this);
             mEndDialog.setCancelable(true);
             mEndDialog.show();
