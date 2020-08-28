@@ -39,8 +39,8 @@ class WebviewJavainterface {
     @JavascriptInterface
     public void show_snackbar(String message){
 
-            Toast.makeText(mainActivity.getApplicationContext(),message, Toast.LENGTH_LONG).show();
-       // Snackbar.make(mainActivity.getCurrentFocus(), message,Snackbar.LENGTH_LONG).show();
+       //     Toast.makeText(mainActivity.getApplicationContext(),message, Toast.LENGTH_LONG).show();
+        Snackbar.make(mainActivity.getCurrentFocus(), message,Snackbar.LENGTH_LONG).show();
 
     }
 

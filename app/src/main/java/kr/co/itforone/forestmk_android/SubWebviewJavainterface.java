@@ -78,7 +78,7 @@ class SubWebviewJavainterface {
 
     @JavascriptInterface
     public void setLogininfo(String id,String password) {
-        SharedPreferences pref = mainActivity.getSharedPreferences("logininfo", mainActivity.MODE_PRIVATE);
+        SharedPreferences pref = activity.getSharedPreferences("logininfo", mainActivity.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("id",id);
         editor.putString("pwd",password);
@@ -99,15 +99,34 @@ class SubWebviewJavainterface {
 
         activity.webView.post(new Runnable() {
             public void run() {
-                activity.onBackPressed();
+
+                if(activity.webView.canGoBack()){
+                    activity.webView.goBack();
+                }
+                else {
+                    activity.onBackPressed();
+                }
+
             }
         });
     }
 
     @JavascriptInterface
    public void show_snackbar(String text){
-        Toast.makeText(activity.getApplicationContext(),text, Toast.LENGTH_LONG).show();
-        //Snackbar.make(activity.getCurrentFocus(), text,Snackbar.LENGTH_LONG).show();
+        //Toast.makeText(activity.getApplicationContext(),text, Toast.LENGTH_LONG).show();
+        Snackbar.make(activity.getCurrentFocus(), text,Snackbar.LENGTH_LONG).show();
     }
 
+    @JavascriptInterface
+    public void NoRefresh(){
+        //Toast.makeText(mainActivity.getApplicationContext(),"Norefresh",Toast.LENGTH_LONG).show();
+        activity.Norefresh();
+        activity.flg_refresh=0;
+    }
+
+    @JavascriptInterface
+    public void YesRefresh(){
+        activity.Yesrefresh();
+        activity.flg_refresh=1;
+    }
 }

@@ -2,6 +2,7 @@
 
     <string name="app_name">숲마켓</string>
     <string name="home">http://14.48.175.177/bbs/board.php?bo_table=deal</string>
+    <string name="home2">http://14.48.175.177/</string>
     <string name="address">http://14.48.175.177/bbs/search_address.php</string>
     <string name="login">http://14.48.175.177/bbs/login_check.php?</string>
 

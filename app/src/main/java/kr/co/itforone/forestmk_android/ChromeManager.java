@@ -74,6 +74,7 @@ class ChromeManager extends WebChromeClient {
         });
         builder.setCancelable(false);
         AlertDialog dialog = builder.create();
+      //  mainActivity.current_dialog = dialog;
         dialog.show();
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         positiveButton.setTextColor(Color.parseColor("#9dc543"));
@@ -83,7 +84,7 @@ class ChromeManager extends WebChromeClient {
 
     @Override
     public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
-
+        mainActivity.flg_confirm=1;
       //mainActivity.flg_alert=1;
 
         /*new AlertDialog.Builder(view.getContext(),R.style.MyAlertDialogStyle)
@@ -131,7 +132,10 @@ class ChromeManager extends WebChromeClient {
         // Create the alert dialog
         AlertDialog dialog = builder.create();
         // Finally, display the alert dialog
+     //   mainActivity.current_dialog = dialog;
         dialog.show();
+
+
 
         // Get the alert dialog buttons reference
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);

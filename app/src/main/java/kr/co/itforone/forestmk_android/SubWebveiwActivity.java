@@ -1,22 +1,33 @@
 package kr.co.itforone.forestmk_android;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.io.IOException;
 
@@ -24,9 +35,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SubWebveiwActivity extends AppCompatActivity {
-
+    @BindView(R.id.sub_refreshlayout)   SwipeRefreshLayout subrefreshlayout;
     @BindView(R.id.subWebview)    public WebView webView;
-    int flg_alert =0;
+    int flg_alert =0,flg_confirm=0;
+    public int flg_refresh = 1;
+    private ActivityManager am = ActivityManager.getInstance();
+    Dialog current_dialog;
     ValueCallback<Uri[]> filePathCallbackLollipop;
     static final int FILECHOOSER_LOLLIPOP_REQ_CODE=1300;
     static final int PERMISSION_REQUEST_CODE = 1;
@@ -34,11 +48,13 @@ public class SubWebveiwActivity extends AppCompatActivity {
     static final int GET_ADDRESS =3;
     private Location location;
     public Uri mImageCaptureUri,croppath;
+    private EndDialog mEndDialog;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         ButterKnife.bind(this);
+        am.addActivity(this);
 
         webView.setWebChromeClient(new SubChromeManager(this));
         webView.setWebViewClient(new SubViewManager(this));
@@ -62,11 +78,45 @@ public class SubWebveiwActivity extends AppCompatActivity {
         }
 
         if(url!=null && !url.isEmpty()){
+            if(url.contains("write.php")){
+                Norefresh();
+            }
+            else{
+                Yesrefresh();
+            }
             webView.loadUrl(url);
         }
         else{
 
         }
+
+
+
+        subrefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                webView.clearCache(true);
+                webView.reload();
+                subrefreshlayout.setRefreshing(false);
+            }
+
+        });
+
+        subrefreshlayout.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+
+                if(webView.getScrollY() == 0 ){
+                    subrefreshlayout.setEnabled(true);
+                }
+                else{
+                    subrefreshlayout.setEnabled(false);
+                }
+            }
+        });
+
+
     }
 
 
@@ -218,10 +268,77 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     public void onBackPressed() {
+        //if(webView.getUrl().equals(getString(R.string.home)))
+        //Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
+        if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2))){
+            mEndDialog = new EndDialog(SubWebveiwActivity.this);
+            mEndDialog.setCancelable(true);
+            mEndDialog.show();
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
 
-        if(webView.canGoBack()){
+            Window window = mEndDialog.getWindow();
+            int x = (int)(size.x * 0.8f);
+            int y = (int)(size.y* 0.45f);
+
+            window.setLayout(x,y);
+        }
+       else  if(webView.getUrl().contains("write.php")){
+            AlertDialog.Builder builder = new AlertDialog.Builder(SubWebveiwActivity.this);
+            // Set a title for alert dialog
+            builder.setTitle("");
+            String message;
+            if(webView.getUrl().contains("w=u")){
+                message="수정을 취소하시겠습니까?";
+            }
+            else{
+                message = "글쓰기를 종료하시겠습니까?";
+            }
+
+            // Show a message on alert dialog
+            builder.setMessage(message);
+
+            // Set the positive button
+            builder.setPositiveButton("확인",   new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    if(webView.canGoBack()){
+                        webView.goBack();
+                    }
+                    else{
+                        finish();
+                        overridePendingTransition(R.anim.stay, R.anim.fadeout);
+                    }
+                }
+            });
+            // Set the negative button
+            builder.setNegativeButton("취소",  new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.setCancelable(true);
+            // Create the alert dialog
+            AlertDialog dialog = builder.create();
+            // Finally, display the alert dialog
+          //  current_dialog = dialog;
+            dialog.show();
+            // Get the alert dialog buttons reference
+            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+            // Change the alert dialog buttons text and background color
+            positiveButton.setTextColor(Color.parseColor("#9dc543"));
+            negativeButton.setTextColor(Color.parseColor("#ff0000"));
+
+        }
+        else if(webView.canGoBack()){
+            webView.getUrl();
             webView.goBack();
         }
         else {
@@ -230,4 +347,22 @@ public class SubWebveiwActivity extends AppCompatActivity {
         }
 
     }
+
+    public void Norefresh(){
+        subrefreshlayout.setEnabled(false);
+    }
+    public void Yesrefresh(){
+        subrefreshlayout.setEnabled(true);
+    }
+
+    public void click_dialogN(View view){
+        //  Toast.makeText(mContext.getApplicationContext(),"test",Toast.LENGTH_LONG).show();
+        mEndDialog.dismiss();
+    }
+
+    public void click_dialogY(View view){
+        //    Toast.makeText(mContext.getApplicationContext(),"test2",Toast.LENGTH_LONG).show();
+        am.finishAllActivity();
+    }
+
 }

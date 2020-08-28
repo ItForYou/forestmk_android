@@ -72,6 +72,7 @@ class SubChromeManager extends WebChromeClient {
         });
         builder.setCancelable(false);
         AlertDialog dialog = builder.create();
+       // activity.current_dialog = dialog;
         dialog.show();
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         positiveButton.setTextColor(Color.parseColor("#9dc543"));
@@ -80,6 +81,8 @@ class SubChromeManager extends WebChromeClient {
 
     @Override
     public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+        activity.flg_confirm =1;
+
 //        new AlertDialog.Builder(view.getContext())
 //                .setTitle("")
 //                .setMessage(message)
@@ -124,6 +127,7 @@ class SubChromeManager extends WebChromeClient {
         // Create the alert dialog
         AlertDialog dialog = builder.create();
         // Finally, display the alert dialog
+     //   activity.current_dialog = dialog;
         dialog.show();
 
         // Get the alert dialog buttons reference

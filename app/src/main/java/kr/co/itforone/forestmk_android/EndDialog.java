@@ -1,5 +1,6 @@
 package kr.co.itforone.forestmk_android;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,9 +12,9 @@ import androidx.annotation.NonNull;
 import butterknife.ButterKnife;
 
 public class EndDialog extends Dialog {
-    private MainActivity mContext;
+    private Activity mContext;
 
-    public EndDialog(@NonNull MainActivity context) {
+    public EndDialog(Activity context) {
         super(context);
         mContext = context;
     }
