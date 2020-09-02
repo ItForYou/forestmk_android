@@ -74,6 +74,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
         webView.setLongClickable(true);
         String url="";
         Intent intent = getIntent();
+
         if(intent!=null) {
             url = intent.getExtras().getString("subview_url");
         }
@@ -90,8 +91,6 @@ public class SubWebveiwActivity extends AppCompatActivity {
         else{
 
         }
-
-
 
         subrefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
