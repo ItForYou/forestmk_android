@@ -26,6 +26,16 @@ class SubViewManager extends WebViewClient {
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
    //     Toast.makeText(context.getApplicationContext(),"sub - " +url,Toast.LENGTH_LONG).show();
 
+        if(url.contains("register_form.php") || url.contains("password_lost.php")){
+            context.Norefresh();
+            context.flg_refresh=0;
+        }
+        else{
+            context.Yesrefresh();
+            context.flg_refresh=1;
+        }
+
+
         if(url.contains("category.php") || url.contains("recent_list.php") || url.contains("mypage.php") ||  (url.contains("board.php")&&!url.contains("wr_id")) || url.contains("write.php")) {
             Intent intent = new Intent(context, SubWebveiwActivity.class);
             intent.putExtra("subview_url", url);

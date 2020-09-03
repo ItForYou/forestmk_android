@@ -126,7 +126,7 @@ class SubWebviewJavainterface {
         mainActivity.flg_modal=i;
     }
 
-    @JavascriptInterface
+   /* @JavascriptInterface
     public void NoRefresh(){
         //Toast.makeText(mainActivity.getApplicationContext(),"Norefresh",Toast.LENGTH_LONG).show();
         activity.Norefresh();
@@ -137,5 +137,5 @@ class SubWebviewJavainterface {
     public void YesRefresh(){
         activity.Yesrefresh();
         activity.flg_refresh=1;
-    }
+    }*/
 }

@@ -107,7 +107,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
             @Override
             public void onScrollChanged() {
 
-                if(webView.getScrollY() == 0 ){
+                if(webView.getScrollY() == 0  && flg_refresh ==1){
                     subrefreshlayout.setEnabled(true);
                 }
                 else{

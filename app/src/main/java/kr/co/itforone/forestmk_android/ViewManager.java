@@ -33,6 +33,15 @@ class ViewManager extends WebViewClient {
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
 //            Toast.makeText(mainActivity.getApplicationContext(),"test-"+url, Toast.LENGTH_LONG).show();
 
+        if(url.contains("register_form.php") || url.contains("password_lost.php")){
+            mainActivity.Norefresh();
+            mainActivity.flg_refresh=0;
+        }
+        else{
+            mainActivity.Yesrefresh();
+            mainActivity.flg_refresh=1;
+        }
+
       if(url.contains("category.php") || url.contains("recent_list.php") || url.contains("mypage.php") ||  (url.contains("board.php")&&!url.contains("wr_id")) || url.contains("write.php")) {
           Intent intent = new Intent(mainActivity, SubWebveiwActivity.class);
           intent.putExtra("subview_url", url);

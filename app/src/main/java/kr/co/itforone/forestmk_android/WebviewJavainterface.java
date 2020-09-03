@@ -114,7 +114,7 @@ class WebviewJavainterface {
 
     }
 
-    @JavascriptInterface
+    /*@JavascriptInterface
     public void NoRefresh(){
         //Toast.makeText(mainActivity.getApplicationContext(),"Norefresh",Toast.LENGTH_LONG).show();
         mainActivity.Norefresh();
@@ -125,6 +125,6 @@ class WebviewJavainterface {
     public void YesRefresh(){
         mainActivity.Yesrefresh();
         mainActivity.flg_refresh=1;
-    }
+    }*/
 
 }

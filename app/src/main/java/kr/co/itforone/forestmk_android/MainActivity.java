@@ -190,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-
-        /*WebBackForwardList list = null;
+        WebBackForwardList list = null;
+        /*
         String backurl ="";
 
         try{
