@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         am.addActivity(this);
 
-
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
         if(hasPermissions(PERMISSIONS)) {
@@ -274,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
+
             builder.setCancelable(false);
             // Create the alert dialog
             AlertDialog dialog = builder.create();
