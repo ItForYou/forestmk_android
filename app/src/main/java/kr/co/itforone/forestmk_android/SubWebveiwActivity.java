@@ -50,6 +50,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
     private Location location;
     public Uri mImageCaptureUri,croppath;
     private EndDialog mEndDialog;
+    int flg_snackbar=0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

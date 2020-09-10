@@ -35,7 +35,7 @@ class SubWebviewJavainterface {
 
     @JavascriptInterface
     public void set_address(String addr12, String addr11){
-        Toast.makeText(activity.getApplicationContext(),addr11,Toast.LENGTH_LONG).show();
+      //  Toast.makeText(activity.getApplicationContext(),addr11,Toast.LENGTH_LONG).show();
         Intent intent = new Intent();//startActivity()를 할것이 아니므로 그냥 빈 인텐트로 만듦
         intent.putExtra("address12",addr12);
         intent.putExtra("address11",addr11);
@@ -110,11 +110,14 @@ class SubWebviewJavainterface {
             }
         });
     }
-
     @JavascriptInterface
-   public void show_snackbar(String text){
-        //Toast.makeText(activity.getApplicationContext(),text, Toast.LENGTH_LONG).show();
-        Snackbar.make(activity.getCurrentFocus(), text,Snackbar.LENGTH_LONG).show();
+   public void show_snackbar(String text, int flg_value){
+
+       // Toast.makeText(activity.getApplicationContext(),text, Toast.LENGTH_LONG).show();
+        if(activity.flg_snackbar!=flg_value)
+        Snackbar.make(activity.findViewById(R.id.sub_refreshlayout), text,Snackbar.LENGTH_LONG).show();
+        activity.flg_snackbar=flg_value;
+
     }
     @JavascriptInterface
     public void setflgmodal2(int i) {
@@ -123,7 +126,7 @@ class SubWebviewJavainterface {
     }
     @JavascriptInterface
     public void setflgmodal(int i) {
-        mainActivity.flg_modal=i;
+        activity.flg_modal=i;
     }
 
    /* @JavascriptInterface

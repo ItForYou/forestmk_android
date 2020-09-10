@@ -35,15 +35,13 @@ class WebviewJavainterface {
         mainActivity.startActivity(intent);
 
     }
-
     @JavascriptInterface
     public void show_snackbar(String message){
 
        //     Toast.makeText(mainActivity.getApplicationContext(),message, Toast.LENGTH_LONG).show();
-        Snackbar.make(mainActivity.getCurrentFocus(), message,Snackbar.LENGTH_LONG).show();
+        Snackbar.make(mainActivity.findViewById(R.id.refreshlayout), message,Snackbar.LENGTH_LONG).show();
 
     }
-
     @JavascriptInterface
     public void sharelink() {
         Intent intent = new Intent(android.content.Intent.ACTION_SEND);
@@ -88,6 +86,16 @@ class WebviewJavainterface {
 
     @JavascriptInterface
     public void setflgmodal2(int i) {
+        mainActivity.flg_sortmodal=i;
+    }
+
+    @JavascriptInterface
+    public void setflgmodal3(int i) {
+        mainActivity.flg_sortmodal=i;
+    }
+
+    @JavascriptInterface
+    public void setflgmodal4(int i) {
         mainActivity.flg_sortmodal=i;
     }
 
