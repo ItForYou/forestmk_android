@@ -31,9 +31,11 @@ class ViewManager extends WebViewClient {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//            Toast.makeText(mainActivity.getApplicationContext(),"test-"+url, Toast.LENGTH_LONG).show();
+           // Toast.makeText(mainActivity.getApplicationContext(),"test-"+url, Toast.LENGTH_LONG).show();
 
-        if(url.contains("register_form.php") || url.contains("password_lost.php") || (url.contains("board.php") && url.contains("wr_id="))){
+        if(url.contains("register_form.php") || url.contains("password_lost.php") ||
+                (url.contains("board.php") && url.contains("wr_id=")) || url.contains("mypage.php") ||
+                url.contains("login.php") || url.contains("mymap.php")){
             mainActivity.Norefresh();
             mainActivity.flg_refresh=0;
         }

@@ -64,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
     static final int GET_ADDRESS =3;
     private LocationManager locationManager;
     private EndDialog mEndDialog;
-    int flg_alert = 0, flg_confirm=0, flg_modal=0,flg_sortmodal=0;
+    boolean gps_enabled = false;
+    int flg_alert = 0, flg_confirm=0, flg_modal=0,flg_sortmodal=0, flg_dclmodal=0;
     long backPrssedTime =0;
     String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
         if(hasPermissions(PERMISSIONS)) {
+
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
@@ -190,25 +192,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         WebBackForwardList list = null;
-        /*
-        String backurl ="";
-
-        try{
-            list = webView.copyBackForwardList();
-            if(list.getSize() >1 ){
-                backurl = list.getItemAtIndex(list.getCurrentIndex() - 1).getUrl();
-               // Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
-
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }*/
 
         if (flg_modal==1 && (webView.getUrl().equals(getString(R.string.home))|| webView.getUrl().equals(getString(R.string.home2)))){
             webView.loadUrl("javascript:close_writemd()");
         }
-        else if (flg_sortmodal!=0 && (webView.getUrl().contains("bo_table=deal") || webView.getUrl().equals(getString(R.string.home2)))){
+        else if (flg_sortmodal!=0 && ((webView.getUrl().contains("bo_table=deal")&&!webView.getUrl().contains("wr_id=")) || webView.getUrl().equals(getString(R.string.home2)))){
             webView.loadUrl("javascript:close_sortmd("+flg_sortmodal+")");
+        }
+        else if(flg_dclmodal!=0 && (webView.getUrl().contains("bo_table=deal")&&webView.getUrl().contains("wr_id="))){
+            webView.loadUrl("javascript:close_dclmd()");
         }
        else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2))){
             mEndDialog = new EndDialog(MainActivity.this);
@@ -228,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
             webView.loadUrl(getString(R.string.home));
             webView.clearCache(true);
         }
-
        else if(webView.getUrl().contains("write.php")){
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             // Set a title for alert dialog

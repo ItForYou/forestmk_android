@@ -91,7 +91,7 @@ class WebviewJavainterface {
 
     @JavascriptInterface
     public void setflgmodal3(int i) {
-        mainActivity.flg_sortmodal=i;
+        mainActivity.flg_dclmodal=i;
     }
 
     @JavascriptInterface

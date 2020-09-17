@@ -1,19 +1,25 @@
 package kr.co.itforone.forestmk_android;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -28,6 +34,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.io.IOException;
@@ -38,7 +45,7 @@ import butterknife.ButterKnife;
 public class SubWebveiwActivity extends AppCompatActivity {
     @BindView(R.id.sub_refreshlayout)   SwipeRefreshLayout subrefreshlayout;
     @BindView(R.id.subWebview)    public WebView webView;
-    int flg_alert =0,flg_confirm=0,flg_modal =0,flg_sortmodal=0;
+    int flg_alert =0,flg_confirm=0,flg_modal =0,flg_sortmodal=0,flg_dclmodal=0;
     public int flg_refresh = 1;
     private ActivityManager am = ActivityManager.getInstance();
     Dialog current_dialog;
@@ -47,10 +54,60 @@ public class SubWebveiwActivity extends AppCompatActivity {
     static final int PERMISSION_REQUEST_CODE = 1;
     static final int CROP_FROM_ALBUM =2;
     static final int GET_ADDRESS =3;
-    private Location location;
+    public static LocationManager locationManager;
+    public Location location;
     public Uri mImageCaptureUri,croppath;
     private EndDialog mEndDialog;
     int flg_snackbar=0;
+
+    String[] PERMISSIONS = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+    };
+
+    private final int MY_PERMISSIONS_REQUEST_CAMERA=1001;
+
+    private boolean hasPermissions(String[] permissions) {
+        // 퍼미션 확인
+        int result = -1;
+        for (int i = 0; i < permissions.length; i++) {
+            result = ContextCompat.checkSelfPermission(getApplicationContext(), permissions[i]);
+        }
+        Log.d("per_result",String.valueOf(result));
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (!hasPermissions(PERMISSIONS)){
+
+                }else{
+                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                   /* LocationPosition.act=MainActivity.this;
+                    LocationPosition.setPosition(this);
+                    if(LocationPosition.lng==0.0){
+                        LocationPosition.setPosition(this);
+                    }
+                    String place= LocationPosition.getAddress(LocationPosition.lat,LocationPosition.lng);
+                    webView.loadUrl("javascript:getAddress('"+place+"')");*/
+                }
+                return;
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +128,11 @@ public class SubWebveiwActivity extends AppCompatActivity {
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);//캐시 사용모드 LOAD_NO_CACHE는 캐시를 사용않는다는 뜻
         settings.setTextZoom(100);       // 폰트크기 고정
         ///settings.setUserAgentString(settings.getUserAgentString()+"//Brunei");
+
+        if(hasPermissions(PERMISSIONS)) {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
 
         webView.setLongClickable(true);
         String url="";
@@ -117,8 +179,12 @@ public class SubWebveiwActivity extends AppCompatActivity {
             }
         });
 
+        if(url.contains("mypage.php") || url.contains("login.php")){
 
-    }
+            Norefresh();
+            flg_refresh=0;
+        }
+     }
 
 
     public void set_filePathCallbackLollipop(ValueCallback<Uri[]> filePathCallbackLollipop){
@@ -252,7 +318,12 @@ public class SubWebveiwActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("MissingPermission")
     public double getlat(){
+        if(hasPermissions(PERMISSIONS)) {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
         //Toast.makeText(getApplicationContext(),""+location.getLatitude() + "//" +location.getLongitude(),Toast.LENGTH_LONG).show();
         if(location!=null) {
             return location.getLatitude();
@@ -260,13 +331,44 @@ public class SubWebveiwActivity extends AppCompatActivity {
         else return 0;
     }
 
+    @SuppressLint("MissingPermission")
     public double getlng(){
+
+        if(hasPermissions(PERMISSIONS)) {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
         //Toast.makeText(getApplicationContext(),""+location.getLatitude() + "//" +location.getLongitude(),Toast.LENGTH_LONG).show();
         if(location!=null) {
             return location.getLongitude();
         }
         else return 0;
 
+    }
+
+    public void settingModal(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("");
+        builder.setMessage("핸드폰 위치를 켜주세요!");
+        builder.setNegativeButton("설정하기",   new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        });
+        builder.setPositiveButton("확인",  new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setCancelable(false);
+        AlertDialog dialog = builder.create();
+        //  mainActivity.current_dialog = dialog;
+        dialog.show();
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setTextColor(Color.parseColor("#9dc543"));
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        negativeButton.setTextColor(Color.parseColor("#000000"));
     }
 
 
@@ -287,11 +389,15 @@ public class SubWebveiwActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 */
-        if (flg_modal==1 && (webView.getUrl().equals(getString(R.string.home))|| webView.getUrl().equals(getString(R.string.home2)))){
+        Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
+        if (flg_modal==1 && (webView.getUrl().contains("bo_table=deal") && !webView.getUrl().contains("wr_id="))){
             webView.loadUrl("javascript:close_writemd()");
         }
-       else if (flg_sortmodal!=0 && (webView.getUrl().contains("bo_table=deal") || webView.getUrl().equals(getString(R.string.home2)))){
+       else if (flg_sortmodal!=0 && ((webView.getUrl().contains("bo_table=deal")&&!webView.getUrl().contains("wr_id=")) || webView.getUrl().equals(getString(R.string.home2)))){
             webView.loadUrl("javascript:close_sortmd("+flg_sortmodal+")");
+        }
+       else if(flg_dclmodal!=0 && (webView.getUrl().contains("bo_table=deal")&&webView.getUrl().contains("wr_id="))){
+            webView.loadUrl("javascript:close_dclmd()");
         }
         //if(webView.getUrl().equals(getString(R.string.home)))
         //Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();

@@ -70,7 +70,7 @@ class SubChromeManager extends WebChromeClient {
                 result.confirm();
             }
         });
-        builder.setCancelable(false);
+        //builder.setCancelable(false);
         AlertDialog dialog = builder.create();
        // activity.current_dialog = dialog;
         dialog.show();
@@ -123,7 +123,7 @@ class SubChromeManager extends WebChromeClient {
                 result.cancel();
             }
         });
-        builder.setCancelable(false);
+       // builder.setCancelable(false);
         // Create the alert dialog
         AlertDialog dialog = builder.create();
         // Finally, display the alert dialog

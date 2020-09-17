@@ -1,8 +1,8 @@
 package kr.co.itforone.forestmk_android;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
@@ -12,12 +12,8 @@ import com.google.android.material.snackbar.Snackbar;
 class SubWebviewJavainterface {
 
     SubWebveiwActivity activity;
-    MainActivity mainActivity;
 
-    public SubWebviewJavainterface(SubWebveiwActivity activity, MainActivity mainActivity){
-        this.mainActivity = mainActivity;
-        this.activity=activity;
-    }
+
     public SubWebviewJavainterface(SubWebveiwActivity activity){
 
         this.activity=activity;
@@ -54,31 +50,38 @@ class SubWebviewJavainterface {
 
     @JavascriptInterface
     public void getlocation() {
+        boolean gps_enabled = false;
+        try {
+            gps_enabled = SubWebveiwActivity.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+        if(gps_enabled) {
+            double lat = activity.getlat() * 1000000;
+            double lng = activity.getlng() * 1000000;
+            lat = Math.ceil(lat) / 1000000;
+            lng = Math.ceil(lng) / 1000000;
+            double finalLat = lat;
+            double finalLng = lng;
+            activity.webView.post(new Runnable() {
 
-        double lat = activity.getlat() * 1000000;
-        double lng = activity.getlng() * 1000000;
-        lat = Math.ceil(lat) / 1000000;
-        lng = Math.ceil(lng) / 1000000;
-        double finalLat = lat;
-        double finalLng = lng;
-        activity.webView.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (activity.webView.getUrl().contains("register_form.php") || activity.webView.getUrl().contains("mymap.php"))
+                        activity.webView.loadUrl("javascript:trans_addr('" + finalLat + "','" + finalLng + "');");
+                    else
+                        activity.webView.loadUrl("javascript:sort_distance('" + finalLat + "','" + finalLng + "');");
+                }
+            });
 
-            @Override
-            public void run() {
-                if(activity.webView.getUrl().contains("register_form.php") || mainActivity.webView.getUrl().contains("mymap.php"))
-                    activity.webView.loadUrl("javascript:trans_addr('" + finalLat + "','" + finalLng + "');");
-                else
-                    activity.webView.loadUrl("javascript:sort_distance('" + finalLat + "','" + finalLng + "');");
-            }
-        });
-
-        Toast.makeText(activity.getApplicationContext(),""+lat+" , "+lng, Toast.LENGTH_LONG).show();
-
+            Toast.makeText(activity.getApplicationContext(), "" + lat + " , " + lng, Toast.LENGTH_LONG).show();
+        }
+        else{
+            activity.settingModal();
+        }
     }
 
     @JavascriptInterface
     public void setLogininfo(String id,String password) {
-        SharedPreferences pref = activity.getSharedPreferences("logininfo", mainActivity.MODE_PRIVATE);
+        SharedPreferences pref = activity.getSharedPreferences("logininfo", activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("id",id);
         editor.putString("pwd",password);
@@ -88,7 +91,7 @@ class SubWebviewJavainterface {
     @JavascriptInterface
     public void setlogout() {
        // Toast.makeText(activity.getApplicationContext(),"logout",Toast.LENGTH_LONG).show();
-        SharedPreferences pref = activity.getSharedPreferences("logininfo", mainActivity.MODE_PRIVATE);
+        SharedPreferences pref = activity.getSharedPreferences("logininfo", activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.clear();
         editor.commit();
@@ -121,12 +124,17 @@ class SubWebviewJavainterface {
     }
     @JavascriptInterface
     public void setflgmodal2(int i) {
+       // Toast.makeText(activity.getApplicationContext(),"setflgmodal!!", Toast.LENGTH_LONG).show();
         activity.flg_sortmodal=i;
 
     }
     @JavascriptInterface
     public void setflgmodal(int i) {
         activity.flg_modal=i;
+    }
+    @JavascriptInterface
+    public void setflgmodal3(int i) {
+        activity.flg_dclmodal=i;
     }
 
    /* @JavascriptInterface

@@ -35,20 +35,29 @@ class ChromeManager extends WebChromeClient {
 //        i.setAction(Intent.ACTION_GET_CONTENT);
 //        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
 
-        // Create file chooser intent
+// Create file chooser intent
 
-        Intent i = new Intent(Intent.ACTION_PICK);
-        i. setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-        mainActivity.startActivityForResult(i, FILECHOOSER_LOLLIPOP_REQ_CODE);
+//        Intent i = new Intent(Intent.ACTION_PICK);
+//        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
+//        i. setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("image/*");
+        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        // Create file chooser intent
+        Intent chooserIntent = Intent.createChooser(i, "Image Chooser");
+
+        mainActivity.startActivityForResult(chooserIntent, FILECHOOSER_LOLLIPOP_REQ_CODE);
         return true;
     }
 
     @Override
     public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-
-        // Toast.makeText(mainActivity.getApplicationContext(),"chrome"+String.valueOf(mainActivity.flg_alert), Toast.LENGTH_LONG).show();
+// Toast.makeText(mainActivity.getApplicationContext(),"chrome"+String.valueOf(mainActivity.flg_alert), Toast.LENGTH_LONG).show();
 
         mainActivity.flg_alert=1;
+
 //
 //        new AlertDialog.Builder(view.getContext())
 //                .setTitle("")
@@ -63,7 +72,6 @@ class ChromeManager extends WebChromeClient {
 //                .create()
 //                .show();
 
-
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         builder.setTitle("");
         builder.setMessage(message);
@@ -72,7 +80,7 @@ class ChromeManager extends WebChromeClient {
                 result.confirm();
             }
         });
-        builder.setCancelable(false);
+       // builder.setCancelable(false);
         AlertDialog dialog = builder.create();
       //  mainActivity.current_dialog = dialog;
         dialog.show();
@@ -106,14 +114,11 @@ class ChromeManager extends WebChromeClient {
                 .setCancelable(false)
                 .create()
                 .show();*/
-
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         // Set a title for alert dialog
         builder.setTitle("");
-
         // Show a message on alert dialog
         builder.setMessage(message);
-
         // Set the positive button
         builder.setPositiveButton("확인",   new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -128,14 +133,12 @@ class ChromeManager extends WebChromeClient {
                 result.cancel();
             }
         });
-        builder.setCancelable(false);
+       // builder.setCancelable(false);
         // Create the alert dialog
         AlertDialog dialog = builder.create();
         // Finally, display the alert dialog
      //   mainActivity.current_dialog = dialog;
         dialog.show();
-
-
 
         // Get the alert dialog buttons reference
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
@@ -143,9 +146,7 @@ class ChromeManager extends WebChromeClient {
 
         // Change the alert dialog buttons text and background color
         positiveButton.setTextColor(Color.parseColor("#9dc543"));
-
         negativeButton.setTextColor(Color.parseColor("#ff0000"));
-
         return true;
     }
 }
