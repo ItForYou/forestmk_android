@@ -389,7 +389,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 */
-        Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
+     //   Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
         if (flg_modal==1 && (webView.getUrl().contains("bo_table=deal") && !webView.getUrl().contains("wr_id="))){
             webView.loadUrl("javascript:close_writemd()");
         }
@@ -472,7 +472,6 @@ public class SubWebveiwActivity extends AppCompatActivity {
             super.onBackPressed();
             overridePendingTransition(R.anim.stay, R.anim.fadeout);
         }
-
     }
 
     public void Norefresh(){
