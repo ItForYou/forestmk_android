@@ -31,7 +31,7 @@ class SubViewManager extends WebViewClient {
 
         if(url.contains("register_form.php") || url.contains("password_lost.php") ||
                 (url.contains("board.php") && url.contains("wr_id=")) || url.contains("mypage.php") ||
-                url.contains("login.php") || url.contains("mymap.php")){
+                url.contains("login.php") || url.contains("mymap.php") || url.contains("myhp.php")){
             context.Norefresh();
             context.flg_refresh=0;
         }

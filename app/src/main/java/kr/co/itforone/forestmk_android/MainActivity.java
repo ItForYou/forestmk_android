@@ -42,6 +42,8 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.theartofdev.edmodo.cropper.CropImage;
+
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -192,6 +194,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         WebBackForwardList list = null;
+        String backurl ="";
+
+      try{
+            list = webView.copyBackForwardList();
+            if(list.getSize() >1 ){
+                backurl = list.getItemAtIndex(list.getCurrentIndex() - 1).getUrl();
+               // Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
+                return;
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
+         return;
+  /*      if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
+                (backurl.contains("board.php") && backurl.contains("wr_id=")) || backurl.contains("mypage.php") ||
+                backurl.contains("login.php") || backurl.contains("mymap.php")) {
+
+        }
+
+
+
 
         if (flg_modal==1 && (webView.getUrl().equals(getString(R.string.home))|| webView.getUrl().equals(getString(R.string.home2)))){
             webView.loadUrl("javascript:close_writemd()");
@@ -220,10 +244,11 @@ public class MainActivity extends AppCompatActivity {
             webView.loadUrl(getString(R.string.home));
             webView.clearCache(true);
         }
-       else if(webView.getUrl().contains("write.php")){
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            // Set a title for alert dialog
-            builder.setTitle("");
+        else if(webView.getUrl().equals("http://14.48.175.177/bbs/register_form.php?w=u")){
+            Confirm_alert("수정을 취소하시겠습니까?");
+        }
+        else if(webView.getUrl().contains("write.php")){
+
             String message;
 
             if(webView.getUrl().contains("w=u")){
@@ -232,57 +257,11 @@ public class MainActivity extends AppCompatActivity {
             else{
                 message = "글쓰기를 종료하시겠습니까?";
             }
+            Confirm_alert(message);
 
-            // Show a message on alert dialog
-            builder.setMessage(message);
-            // Set the positive button
-            builder.setPositiveButton("확인",   new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    if(webView.canGoBack()){
-                        webView.goBack();
-                    }
-                    else{
-                        mEndDialog = new EndDialog(MainActivity.this);
-                        mEndDialog.setCancelable(true);
-                        mEndDialog.show();
-                        Display display = getWindowManager().getDefaultDisplay();
-                        Point size = new Point();
-                        display.getSize(size);
-
-                        Window window = mEndDialog.getWindow();
-                        int x = (int)(size.x * 0.8f);
-                        int y = (int)(size.y* 0.45f);
-
-                        window.setLayout(x,y);
-                    }
-                }
-            });
-            // Set the negative button
-            builder.setNegativeButton("취소",  new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-
-            builder.setCancelable(false);
-            // Create the alert dialog
-            AlertDialog dialog = builder.create();
-            // Finally, display the alert dialog
-         //   current_dialog = dialog;
-            dialog.show();
-            // Get the alert dialog buttons reference
-            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-            // Change the alert dialog buttons text and background color
-            positiveButton.setTextColor(Color.parseColor("#9dc543"));
-
-            negativeButton.setTextColor(Color.parseColor("#ff0000"));
         }
 
        else if(webView.canGoBack()){
-            webView.getUrl();
             webView.goBack();
         }
 
@@ -312,8 +291,64 @@ public class MainActivity extends AppCompatActivity {
 //                backPrssedTime = tempTime;
 //                Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누를시 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
 //            }
-        }
+        }*/
     }
+
+    public void Confirm_alert(String Message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        // Set a title for alert dialog
+        builder.setTitle("");
+
+
+        // Show a message on alert dialog
+        builder.setMessage(Message);
+        // Set the positive button
+        builder.setPositiveButton("확인",   new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if(webView.canGoBack()){
+                    webView.goBack();
+                }
+                else{
+                    mEndDialog = new EndDialog(MainActivity.this);
+                    mEndDialog.setCancelable(true);
+                    mEndDialog.show();
+                    Display display = getWindowManager().getDefaultDisplay();
+                    Point size = new Point();
+                    display.getSize(size);
+
+                    Window window = mEndDialog.getWindow();
+                    int x = (int)(size.x * 0.8f);
+                    int y = (int)(size.y* 0.45f);
+
+                    window.setLayout(x,y);
+                }
+            }
+        });
+        // Set the negative button
+        builder.setNegativeButton("취소",  new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.setCancelable(false);
+        // Create the alert dialog
+        AlertDialog dialog = builder.create();
+        // Finally, display the alert dialog
+        //   current_dialog = dialog;
+        dialog.show();
+        // Get the alert dialog buttons reference
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+        // Change the alert dialog buttons text and background color
+        positiveButton.setTextColor(Color.parseColor("#9dc543"));
+
+        negativeButton.setTextColor(Color.parseColor("#ff0000"));
+
+    }
+
 
 
     public void click_dialogN(View view){
@@ -346,42 +381,9 @@ public class MainActivity extends AppCompatActivity {
                         if (data != null) {
                             //String dataString = data.getDataString();
                             //  ClipData clipData = data.getClipData();
-                            mImageCaptureUri = data.getData();
-
-                            try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mImageCaptureUri);
-                                String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "Title", null);
-                                croppath = Uri.parse(path);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            try {
-                                Intent intent = new Intent("com.android.camera.action.CROP");
-                                intent.setDataAndType(mImageCaptureUri, "image/*");
-                                intent.putExtra("outputX", 500);
-                                intent.putExtra("outputY", 500);
-                                intent.putExtra("aspectX", 1);
-                                intent.putExtra("aspectY", 1);
-                                intent.putExtra("scale", true);
-                                intent.putExtra("return-data", true);
-                                intent.putExtra(MediaStore.EXTRA_OUTPUT, croppath);
-                                startActivityForResult(intent, CROP_FROM_ALBUM);
-                            } catch (ActivityNotFoundException e) {
-                                String errorMessage = "your device doesn't support the crop action!";
-                                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
-                            }
-//                        if (clipData != null) {
-//                            result = new Uri[clipData.getItemCount()];
-//                            for (int i = 0; i < clipData.getItemCount(); i++) {
-//                                ClipData.Item item = clipData.getItemAt(i);
-//                                result[i] = item.getUri();
-//                            }
-//                        }
-//                        else {
-//                            result = ChromeManager.FileChooserParams.parseResult(resultCode, data);
-//                            //result = (data == null) ? new Uri[]{mCapturedImageURI} : WebChromeClient.FileChooserParams.parseResult(resultCode, data);
-//                        }
+                            Uri result = (data == null || resultCode != RESULT_OK) ? null : data.getData();
+                            CropImage.activity(result)
+                                    .start(this);
                         } else {
                             filePathCallbackLollipop.onReceiveValue(null);
                             filePathCallbackLollipop = null;
@@ -419,36 +421,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 break;
-            case CROP_FROM_ALBUM:
-                if (resultCode == RESULT_OK) {
-                    Log.d("imgresult", String.valueOf(resultCode));
-                    Uri[] result = null;
-                    result = new Uri[1];
-                    // Bitmap photo = data.getExtras().getParcelable("data");
-                    /*ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                    String path = MediaStore.Images.Media.insertImage(this.getContentResolver(), photo, "Title", null);*/
-                    //result[0] = Uri.parse(path);
-                    result[0] = croppath;
+            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
 
-                    if (result[0] != null) {
-                        //  Toast.makeText(getApplicationContext(),"step1",Toast.LENGTH_LONG).show();
-                        filePathCallbackLollipop.onReceiveValue(result);
-                    } else {
-                        //  Toast.makeText(getApplicationContext(),"step2",Toast.LENGTH_LONG).show();
-                    }
-                    break;
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                Uri resultUri = result.getUri();
+                Uri[] arr_Uri = new Uri[1];
+                arr_Uri[0] = resultUri;
+                filePathCallbackLollipop.onReceiveValue(arr_Uri);
+                filePathCallbackLollipop = null;
+                break;
 
-                } else {
-                    try {
-                        if (filePathCallbackLollipop != null) {
-                            filePathCallbackLollipop.onReceiveValue(null);
-                            filePathCallbackLollipop = null;
-                        }
-                    } catch (Exception e) {
-
-                    }
-                }
         }
     }
 
