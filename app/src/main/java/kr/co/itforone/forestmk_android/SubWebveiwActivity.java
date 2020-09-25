@@ -38,6 +38,7 @@ import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.IOException;
 
@@ -236,6 +237,8 @@ public class SubWebveiwActivity extends AppCompatActivity {
                             Uri result = (data == null || resultCode != RESULT_OK) ? null : data.getData();
 
                             CropImage.activity(result)
+                                    .setAspectRatio(1,1)//가로 세로 1:1로 자르기 기능 * 1:1 4:3 16:9로 정해져 있어요
+                                    .setCropShape(CropImageView.CropShape.OVAL)
                                     .start(this);
 //                        if (clipData != null) {
 //                            result = new Uri[clipData.getItemCount()];
@@ -288,11 +291,13 @@ public class SubWebveiwActivity extends AppCompatActivity {
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
 
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                Uri resultUri = result.getUri();
-                Uri[] arr_Uri = new Uri[1];
-                arr_Uri[0] = resultUri;
-                filePathCallbackLollipop.onReceiveValue(arr_Uri);
-                filePathCallbackLollipop = null;
+                if(result!=null) {
+                    Uri resultUri = result.getUri();
+                    Uri[] arr_Uri = new Uri[1];
+                    arr_Uri[0] = resultUri;
+                    filePathCallbackLollipop.onReceiveValue(arr_Uri);
+                    filePathCallbackLollipop = null;
+                }
                 break;
 
         }
