@@ -41,9 +41,16 @@ class SubChromeManager extends WebChromeClient {
 
         // Create file chooser intent
 
-        Intent i = new Intent(Intent.ACTION_PICK);
-        i. setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-        activity.startActivityForResult(i, FILECHOOSER_LOLLIPOP_REQ_CODE);
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("image/*");
+        if(!webView.getUrl().contains("register_form.php"))
+        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        // Create file chooser intent
+        Intent chooserIntent = Intent.createChooser(i, "Image Chooser");
+
+        activity.startActivityForResult(chooserIntent, FILECHOOSER_LOLLIPOP_REQ_CODE);
+
         return true;
     }
 

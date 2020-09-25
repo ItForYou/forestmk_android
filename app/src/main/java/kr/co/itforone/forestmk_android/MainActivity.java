@@ -43,6 +43,7 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.IOException;
 
@@ -66,9 +67,10 @@ public class MainActivity extends AppCompatActivity {
     static final int GET_ADDRESS =3;
     private LocationManager locationManager;
     private EndDialog mEndDialog;
-    boolean gps_enabled = false;
+    boolean gps_enabled = false, now_refreshlayout=true;
     int flg_alert = 0, flg_confirm=0, flg_modal=0,flg_sortmodal=0, flg_dclmodal=0;
     long backPrssedTime =0;
+
     String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -180,44 +182,52 @@ public class MainActivity extends AppCompatActivity {
             public void onScrollChanged() {
 
                 if(webView.getScrollY() == 0 && flg_refresh ==1){
+                   Log.d("nowrefre",String.valueOf(now_refreshlayout));
+                    now_refreshlayout = true;
                     refreshlayout.setEnabled(true);
                 }
                 else{
+                    Log.d("nowrefre",String.valueOf(now_refreshlayout));
                     refreshlayout.setEnabled(false);
                 }
 
             }
         });
 
+        Log.d("lastchk",String.valueOf(now_refreshlayout));
     }
 
     @Override
     public void onBackPressed(){
+
         WebBackForwardList list = null;
         String backurl ="";
 
       try{
             list = webView.copyBackForwardList();
             if(list.getSize() >1 ){
+
                 backurl = list.getItemAtIndex(list.getCurrentIndex() - 1).getUrl();
-               // Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
-                return;
+             //  Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
+
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
-         return;
-  /*      if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
+       // Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
+
+        if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
                 (backurl.contains("board.php") && backurl.contains("wr_id=")) || backurl.contains("mypage.php") ||
                 backurl.contains("login.php") || backurl.contains("mymap.php")) {
-
+                    Norefresh();
+        }
+        else{
+            Yesrefresh();
         }
 
 
-
-
         if (flg_modal==1 && (webView.getUrl().equals(getString(R.string.home))|| webView.getUrl().equals(getString(R.string.home2)))){
+            //Toast.makeText(getApplicationContext(),"close_excute!!",Toast.LENGTH_LONG).show();
             webView.loadUrl("javascript:close_writemd()");
         }
         else if (flg_sortmodal!=0 && ((webView.getUrl().contains("bo_table=deal")&&!webView.getUrl().contains("wr_id=")) || webView.getUrl().equals(getString(R.string.home2)))){
@@ -291,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
 //                backPrssedTime = tempTime;
 //                Toast.makeText(getApplicationContext(), "한번 더 뒤로가기 누를시 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
 //            }
-        }*/
+        }
     }
 
     public void Confirm_alert(String Message){
@@ -323,6 +333,7 @@ public class MainActivity extends AppCompatActivity {
                     window.setLayout(x,y);
                 }
             }
+
         });
         // Set the negative button
         builder.setNegativeButton("취소",  new DialogInterface.OnClickListener() {
@@ -383,6 +394,8 @@ public class MainActivity extends AppCompatActivity {
                             //  ClipData clipData = data.getClipData();
                             Uri result = (data == null || resultCode != RESULT_OK) ? null : data.getData();
                             CropImage.activity(result)
+                                    .setAspectRatio(1,1)//가로 세로 1:1로 자르기 기능 * 1:1 4:3 16:9로 정해져 있어요
+                                    .setCropShape(CropImageView.CropShape.OVAL)
                                     .start(this);
                         } else {
                             filePathCallbackLollipop.onReceiveValue(null);
@@ -456,10 +469,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Norefresh(){
+        now_refreshlayout = false;
         refreshlayout.setEnabled(false);
+        Log.d("nowrefre",String.valueOf(now_refreshlayout));
+        //Log.d("nowrefre","false");
     }
     public void Yesrefresh(){
+        now_refreshlayout = true;
         refreshlayout.setEnabled(true);
+        Log.d("nowrefre",String.valueOf(now_refreshlayout));
+        //Log.d("nowrefre","false");
     }
 
 }

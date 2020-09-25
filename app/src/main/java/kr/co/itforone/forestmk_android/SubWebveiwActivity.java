@@ -45,7 +45,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SubWebveiwActivity extends AppCompatActivity {
+
     @BindView(R.id.sub_refreshlayout)   SwipeRefreshLayout subrefreshlayout;
+    //@BindView(R.id.refreshlayout)   SwipeRefreshLayout refreshlayout;
     @BindView(R.id.subWebview)    public WebView webView;
     int flg_alert =0,flg_confirm=0,flg_modal =0,flg_sortmodal=0,flg_dclmodal=0;
     public int flg_refresh = 1;
@@ -60,6 +62,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
     public Location location;
     public Uri mImageCaptureUri,croppath;
     private EndDialog mEndDialog;
+    Boolean before_refreshlayout,now_refreshlayout;
     int flg_snackbar=0;
 
     String[] PERMISSIONS = {
@@ -142,6 +145,8 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
         if(intent!=null) {
             url = intent.getExtras().getString("subview_url");
+            before_refreshlayout = intent.getExtras().getBoolean("before_refresh");
+
         }
 
         if(url!=null && !url.isEmpty()){
@@ -156,6 +161,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
         else{
 
         }
+
 
         subrefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
@@ -173,6 +179,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
             public void onScrollChanged() {
 
                 if(webView.getScrollY() == 0  && flg_refresh ==1){
+                    now_refreshlayout=true;
                     subrefreshlayout.setEnabled(true);
                 }
                 else{
@@ -181,17 +188,30 @@ public class SubWebveiwActivity extends AppCompatActivity {
             }
         });
 
+
+
         if(url.contains("mypage.php") || url.contains("login.php")){
 
             Norefresh();
             flg_refresh=0;
         }
+        Log.d("sub_lastchk1",String.valueOf(now_refreshlayout));
+        Log.d("sub_lastchk2",String.valueOf(before_refreshlayout));
+   //     Toast.makeText(getApplicationContext(),now_refreshlayout.toString()+","+before_refreshlayout.toString().toString(),Toast.LENGTH_LONG).show();
      }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //Toast.makeText(getApplicationContext(),now_refreshlayout.toString()+","+before_refreshlayout.toString(),Toast.LENGTH_LONG).show();
+        //subrefreshlayout.setEnabled(before_refreshlayout);
+    }
 
     public void set_filePathCallbackLollipop(ValueCallback<Uri[]> filePathCallbackLollipop){
         this.filePathCallbackLollipop = filePathCallbackLollipop;
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -338,22 +358,31 @@ public class SubWebveiwActivity extends AppCompatActivity {
         WebBackForwardList list = null;
         String backurl ="";
 
+
        try{
             list = webView.copyBackForwardList();
             if(list.getSize() >1 ){
                 backurl = list.getItemAtIndex(list.getCurrentIndex() - 1).getUrl();
-                Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
-                return;
+             //   Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
+
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
-     //   Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
+        if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
+                (backurl.contains("board.php") && backurl.contains("wr_id=")) || backurl.contains("mypage.php") ||
+                backurl.contains("login.php") || backurl.contains("mymap.php")) {
 
+            Norefresh();
 
+        }
 
-        if (flg_modal==1 && (webView.getUrl().contains("bo_table=deal") && !webView.getUrl().contains("wr_id="))){
+        else{
+            Yesrefresh();
+        }
+
+        if (flg_modal==1 && ((webView.getUrl().contains("bo_table=deal") && !webView.getUrl().contains("wr_id=")) || webView.getUrl().contains("recent_list.php"))){
             webView.loadUrl("javascript:close_writemd()");
         }
        else if (flg_sortmodal!=0 && ((webView.getUrl().contains("bo_table=deal")&&!webView.getUrl().contains("wr_id=")) || webView.getUrl().equals(getString(R.string.home2)))){
@@ -497,10 +526,12 @@ public class SubWebveiwActivity extends AppCompatActivity {
     }
 
     public void Norefresh(){
+        now_refreshlayout  = false;
         subrefreshlayout.setEnabled(false);
     }
 
     public void Yesrefresh(){
+        now_refreshlayout = true;
         subrefreshlayout.setEnabled(true);
     }
 

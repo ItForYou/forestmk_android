@@ -113,6 +113,7 @@ class SubWebviewJavainterface {
             }
         });
     }
+
     @JavascriptInterface
    public void show_snackbar(String text, int flg_value){
 
@@ -122,6 +123,7 @@ class SubWebviewJavainterface {
         activity.flg_snackbar=flg_value;
 
     }
+
     @JavascriptInterface
     public void setflgmodal2(int i) {
        // Toast.makeText(activity.getApplicationContext(),"setflgmodal!!", Toast.LENGTH_LONG).show();
