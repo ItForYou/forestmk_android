@@ -40,15 +40,18 @@ class ChromeManager extends WebChromeClient {
 //        Intent i = new Intent(Intent.ACTION_PICK);
 //        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
 //        i. setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        Intent i;
 
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
+        if(webView.getUrl().contains("register_form.php"))
+            i =new Intent(Intent.ACTION_PICK);
+        else
+            i = new Intent(Intent.ACTION_GET_CONTENT);
+
         i.setType("image/*");
         i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         // Create file chooser intent
-        Intent chooserIntent = Intent.createChooser(i, "Image Chooser");
 
-        mainActivity.startActivityForResult(chooserIntent, FILECHOOSER_LOLLIPOP_REQ_CODE);
+        mainActivity.startActivityForResult(i, FILECHOOSER_LOLLIPOP_REQ_CODE);
         return true;
     }
 
@@ -80,7 +83,7 @@ class ChromeManager extends WebChromeClient {
                 result.confirm();
             }
         });
-       // builder.setCancelable(false);
+        builder.setCancelable(false);
         AlertDialog dialog = builder.create();
       //  mainActivity.current_dialog = dialog;
         dialog.show();
@@ -133,7 +136,7 @@ class ChromeManager extends WebChromeClient {
                 result.cancel();
             }
         });
-       // builder.setCancelable(false);
+        builder.setCancelable(false);
         // Create the alert dialog
         AlertDialog dialog = builder.create();
         // Finally, display the alert dialog

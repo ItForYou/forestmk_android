@@ -134,9 +134,15 @@ class SubWebviewJavainterface {
     public void setflgmodal(int i) {
         activity.flg_modal=i;
     }
+
     @JavascriptInterface
     public void setflgmodal3(int i) {
         activity.flg_dclmodal=i;
+    }
+
+    @JavascriptInterface
+    public void setflgmodal4(int i) {
+        activity.flg_dclcommmodal=i;
     }
 
    /* @JavascriptInterface

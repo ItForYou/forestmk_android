@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private EndDialog mEndDialog;
     boolean gps_enabled = false, now_refreshlayout=true;
-    int flg_alert = 0, flg_confirm=0, flg_modal=0,flg_sortmodal=0, flg_dclmodal=0;
+    int flg_alert = 0, flg_confirm=0, flg_modal=0,flg_sortmodal=0, flg_dclmodal=0, flg_dclcommmodal=0;
     long backPrssedTime =0;
 
     String[] PERMISSIONS = {
@@ -208,12 +208,14 @@ public class MainActivity extends AppCompatActivity {
             if(list.getSize() >1 ){
 
                 backurl = list.getItemAtIndex(list.getCurrentIndex() - 1).getUrl();
-             //  Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
+                Log.d("back_url", backurl);
+              // Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
 
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+        Log.d("now_url", webView.getUrl());
        // Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
 
         if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
@@ -254,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
             webView.loadUrl(getString(R.string.home));
             webView.clearCache(true);
         }
-        else if(webView.getUrl().equals("http://14.48.175.177/bbs/register_form.php?w=u")){
+        else if(webView.getUrl().contains("http://14.48.175.177/bbs/register_form.php?w=u")){
             Confirm_alert("수정을 취소하시겠습니까?");
         }
         else if(webView.getUrl().contains("write.php")){
@@ -436,13 +438,24 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
 
-                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                Uri resultUri = result.getUri();
-                Uri[] arr_Uri = new Uri[1];
-                arr_Uri[0] = resultUri;
-                filePathCallbackLollipop.onReceiveValue(arr_Uri);
-                filePathCallbackLollipop = null;
-                break;
+                        CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                        if(result!=null) {
+                                Uri resultUri = result.getUri();
+                                Uri[] arr_Uri = new Uri[1];
+                                arr_Uri[0] = resultUri;
+                                filePathCallbackLollipop.onReceiveValue(arr_Uri);
+                                filePathCallbackLollipop = null;
+                            }
+                        else {
+                            try {
+                                if (filePathCallbackLollipop != null) {
+                                    filePathCallbackLollipop.onReceiveValue(null);
+                                    filePathCallbackLollipop = null;
+                                }
+                            } catch (Exception e) {
+                            }
+                        }
+                            break;
 
         }
     }

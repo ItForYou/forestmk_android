@@ -50,7 +50,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
     @BindView(R.id.sub_refreshlayout)   SwipeRefreshLayout subrefreshlayout;
     //@BindView(R.id.refreshlayout)   SwipeRefreshLayout refreshlayout;
     @BindView(R.id.subWebview)    public WebView webView;
-    int flg_alert =0,flg_confirm=0,flg_modal =0,flg_sortmodal=0,flg_dclmodal=0;
+    int flg_alert =0,flg_confirm=0,flg_modal =0,flg_sortmodal=0,flg_dclmodal=0,flg_dclcommmodal=0;
     public int flg_refresh = 1;
     private ActivityManager am = ActivityManager.getInstance();
     Dialog current_dialog;
@@ -298,6 +298,15 @@ public class SubWebveiwActivity extends AppCompatActivity {
                     filePathCallbackLollipop.onReceiveValue(arr_Uri);
                     filePathCallbackLollipop = null;
                 }
+                else {
+                    try {
+                        if (filePathCallbackLollipop != null) {
+                            filePathCallbackLollipop.onReceiveValue(null);
+                            filePathCallbackLollipop = null;
+                        }
+                    } catch (Exception e) {
+                    }
+                }
                 break;
 
         }
@@ -363,17 +372,18 @@ public class SubWebveiwActivity extends AppCompatActivity {
         WebBackForwardList list = null;
         String backurl ="";
 
-
        try{
             list = webView.copyBackForwardList();
             if(list.getSize() >1 ){
                 backurl = list.getItemAtIndex(list.getCurrentIndex() - 1).getUrl();
-             //   Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
 
+                Log.d("back_url", backurl);
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+
+        Log.d("now_url", webView.getUrl());
 
         if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
                 (backurl.contains("board.php") && backurl.contains("wr_id=")) || backurl.contains("mypage.php") ||
@@ -398,7 +408,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
         }
         //if(webView.getUrl().equals(getString(R.string.home)))
         //Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
-        else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2))){
+        else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2)) || webView.getUrl().contains("flg_snackbar=")){
             mEndDialog = new EndDialog(SubWebveiwActivity.this);
             mEndDialog.setCancelable(true);
             mEndDialog.show();
@@ -412,7 +422,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
             window.setLayout(x,y);
         }
-        else if(webView.getUrl().equals("http://14.48.175.177/bbs/register_form.php?w=u")){
+        else if(webView.getUrl().contains("http://14.48.175.177/bbs/register_form.php?w=u")){
             Confirm_alert("수정을 취소하시겠습니까?");
         }
        else  if(webView.getUrl().contains("write.php")){

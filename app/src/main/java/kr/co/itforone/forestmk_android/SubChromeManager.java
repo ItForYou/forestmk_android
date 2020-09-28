@@ -38,18 +38,19 @@ class SubChromeManager extends WebChromeClient {
 //        i.setType("*/*");
 //        i.setAction(Intent.ACTION_GET_CONTENT);
 //        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
+        Intent i;
 
-        // Create file chooser intent
+        if(webView.getUrl().contains("register_form.php"))
+            i =new Intent(Intent.ACTION_PICK);
+        else
+            i = new Intent(Intent.ACTION_GET_CONTENT);
 
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
         i.setType("image/*");
         if(!webView.getUrl().contains("register_form.php"))
         i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        // Create file chooser intent
-        Intent chooserIntent = Intent.createChooser(i, "Image Chooser");
+       // Create file chooser intent
 
-        activity.startActivityForResult(chooserIntent, FILECHOOSER_LOLLIPOP_REQ_CODE);
+        activity.startActivityForResult(i, FILECHOOSER_LOLLIPOP_REQ_CODE);
 
         return true;
     }
@@ -77,7 +78,7 @@ class SubChromeManager extends WebChromeClient {
                 result.confirm();
             }
         });
-        //builder.setCancelable(false);
+        builder.setCancelable(false);
         AlertDialog dialog = builder.create();
        // activity.current_dialog = dialog;
         dialog.show();
