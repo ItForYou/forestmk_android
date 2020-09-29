@@ -119,7 +119,6 @@ class WebviewJavainterface {
         });
          Toast.makeText(mainActivity.getApplicationContext(),""+lat+" , "+lng, Toast.LENGTH_LONG).show();
 
-
     }
 
     /*@JavascriptInterface

@@ -388,12 +388,13 @@ public class SubWebveiwActivity extends AppCompatActivity {
         if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
                 (backurl.contains("board.php") && backurl.contains("wr_id=")) || backurl.contains("mypage.php") ||
                 backurl.contains("login.php") || backurl.contains("mymap.php")) {
-
+            Log.d("NoRefresh!!", webView.getUrl());
             Norefresh();
 
         }
 
         else{
+            Log.d("YesRefresh!!", webView.getUrl());
             Yesrefresh();
         }
 

@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
               // Toast.makeText(getApplicationContext(),backurl,Toast.LENGTH_LONG).show();
 
             }
-        } catch (NullPointerException e) {
+        }catch (NullPointerException e) {
             e.printStackTrace();
         }
         Log.d("now_url", webView.getUrl());
@@ -221,9 +221,11 @@ public class MainActivity extends AppCompatActivity {
         if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
                 (backurl.contains("board.php") && backurl.contains("wr_id=")) || backurl.contains("mypage.php") ||
                 backurl.contains("login.php") || backurl.contains("mymap.php")) {
+                    Log.d("NoRefresh!!", webView.getUrl());
                     Norefresh();
         }
         else{
+            Log.d("YesRefresh!!", webView.getUrl());
             Yesrefresh();
         }
 
@@ -310,8 +312,6 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         // Set a title for alert dialog
         builder.setTitle("");
-
-
         // Show a message on alert dialog
         builder.setMessage(Message);
         // Set the positive button
@@ -357,7 +357,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Change the alert dialog buttons text and background color
         positiveButton.setTextColor(Color.parseColor("#9dc543"));
-
         negativeButton.setTextColor(Color.parseColor("#ff0000"));
 
     }

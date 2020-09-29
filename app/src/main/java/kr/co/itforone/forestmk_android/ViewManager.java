@@ -31,12 +31,10 @@ class ViewManager extends WebViewClient {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+    public boolean shouldOverrideUrlLoading(WebView view, String url){
            // Toast.makeText(mainActivity.getApplicationContext(),"test-"+url, Toast.LENGTH_LONG).show();
         Log.d("nowrefre",String.valueOf(mainActivity.now_refreshlayout));
-
         boolean lastchk = mainActivity.now_refreshlayout;
-
 
       if(url.contains("category.php") || url.contains("recent_list.php") || url.contains("mypage.php") ||  (url.contains("board.php")&&!url.contains("wr_id")) || url.contains("write.php")) {
 
@@ -53,8 +51,6 @@ class ViewManager extends WebViewClient {
       else {
 
           //Toast.makeText(mainActivity.getApplicationContext(),"view"+String.valueOf(mainActivity.flg_alert), Toast.LENGTH_LONG).show();
-
-
           if(url.contains("register_form.php") || url.contains("password_lost.php") ||
                   (url.contains("board.php") && url.contains("wr_id=")) || url.contains("mypage.php") ||
                   url.contains("login.php") || url.contains("mymap.php")){
@@ -71,9 +67,6 @@ class ViewManager extends WebViewClient {
           return false;
 
       }
-
-
-
     }
 
     @Override
