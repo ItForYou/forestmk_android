@@ -115,7 +115,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         ButterKnife.bind(this);
@@ -140,11 +140,12 @@ public class SubWebveiwActivity extends AppCompatActivity {
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
 
-        webView.setLongClickable(true);
+        //webView.setLongClickable(true);
         String url="";
         Intent intent = getIntent();
 
         if(intent!=null) {
+
             url = intent.getExtras().getString("subview_url");
             before_refreshlayout = intent.getExtras().getBoolean("before_refresh");
 
@@ -184,7 +185,8 @@ public class SubWebveiwActivity extends AppCompatActivity {
                     subrefreshlayout.setEnabled(true);
                 }
                 else{
-                    subrefreshlayout.setEnabled(false);
+                    Log.d("nowrefre",String.valueOf(now_refreshlayout));
+                   // subrefreshlayout.setEnabled(false);
                 }
             }
         });
@@ -195,6 +197,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
             Norefresh();
             flg_refresh=0;
+
         }
         Log.d("sub_lastchk1",String.valueOf(now_refreshlayout));
         Log.d("sub_lastchk2",String.valueOf(before_refreshlayout));
@@ -211,8 +214,6 @@ public class SubWebveiwActivity extends AppCompatActivity {
     public void set_filePathCallbackLollipop(ValueCallback<Uri[]> filePathCallbackLollipop){
         this.filePathCallbackLollipop = filePathCallbackLollipop;
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -278,6 +279,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
                     } else {
                         try {
                             if (filePathCallbackLollipop != null) {
+
                                 filePathCallbackLollipop.onReceiveValue(null);
                                 filePathCallbackLollipop = null;
 
@@ -365,21 +367,22 @@ public class SubWebveiwActivity extends AppCompatActivity {
         negativeButton.setTextColor(Color.parseColor("#000000"));
     }
 
-
-
     @Override
     public void onBackPressed() {
         WebBackForwardList list = null;
         String backurl ="";
 
        try{
+
             list = webView.copyBackForwardList();
             if(list.getSize() >1 ){
-                backurl = list.getItemAtIndex(list.getCurrentIndex() - 1).getUrl();
 
+                backurl = list.getItemAtIndex(list.getCurrentIndex() - 1).getUrl();
                 Log.d("back_url", backurl);
+
             }
-        } catch (NullPointerException e) {
+
+        }catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -394,22 +397,34 @@ public class SubWebveiwActivity extends AppCompatActivity {
         }
 
         else{
+
             Log.d("YesRefresh!!", webView.getUrl());
             Yesrefresh();
+
         }
 
         if (flg_modal==1 && ((webView.getUrl().contains("bo_table=deal") && !webView.getUrl().contains("wr_id=")) || webView.getUrl().contains("recent_list.php"))){
+
+            Log.d("backpress_closemd1", webView.getUrl());
             webView.loadUrl("javascript:close_writemd()");
+
         }
        else if (flg_sortmodal!=0 && ((webView.getUrl().contains("bo_table=deal")&&!webView.getUrl().contains("wr_id=")) || webView.getUrl().equals(getString(R.string.home2)))){
+
+            Log.d("backpress_closemd2", webView.getUrl());
             webView.loadUrl("javascript:close_sortmd("+flg_sortmodal+")");
+
         }
        else if(flg_dclmodal!=0 && (webView.getUrl().contains("bo_table=deal")&&webView.getUrl().contains("wr_id="))){
+
+            Log.d("backpress_closemd3", webView.getUrl());
             webView.loadUrl("javascript:close_dclmd()");
+
         }
         //if(webView.getUrl().equals(getString(R.string.home)))
         //Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
         else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2)) || webView.getUrl().contains("flg_snackbar=")){
+
             mEndDialog = new EndDialog(SubWebveiwActivity.this);
             mEndDialog.setCancelable(true);
             mEndDialog.show();
@@ -422,11 +437,15 @@ public class SubWebveiwActivity extends AppCompatActivity {
             int y = (int)(size.y* 0.45f);
 
             window.setLayout(x,y);
+
         }
         else if(webView.getUrl().contains("http://14.48.175.177/bbs/register_form.php?w=u")){
+
             Confirm_alert("수정을 취소하시겠습니까?");
+
         }
        else  if(webView.getUrl().contains("write.php")){
+
             AlertDialog.Builder builder = new AlertDialog.Builder(SubWebveiwActivity.this);
             // Set a title for alert dialog
             builder.setTitle("");
@@ -460,6 +479,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
                 }
             });
+
             builder.setCancelable(true);
             // Create the alert dialog
             AlertDialog dialog = builder.create();
@@ -475,11 +495,29 @@ public class SubWebveiwActivity extends AppCompatActivity {
             negativeButton.setTextColor(Color.parseColor("#ff0000"));
 
         }
+
+        else if(backurl.contains("write_comment_update.php") || backurl.contains("delete_comment.php") || (webView.getUrl().contains("mypage")&& webView.getUrl().contains("compulsive")) ){
+            Log.d("backpress_commentupdate", webView.getUrl());
+            if(list.getSize()>2) {
+                Log.d("backpress_commif", webView.getUrl());
+                for(int i=0; i<list.getSize(); i++) {
+                    webView.goBack();
+                }
+            }
+        }
+
+        else if(backurl.contains("write_update.php")) {
+            finish();
+        }
+
         else if(webView.canGoBack()){
-            webView.getUrl();
+
+            //Toast.makeText(SubWebveiwActivity.this, backurl, Toast.LENGTH_SHORT).show();
+            Log.d("backpress_url", backurl);
             webView.goBack();
         }
         else {
+            Log.d("backpress_superback", webView.getUrl());
             super.onBackPressed();
             overridePendingTransition(R.anim.stay, R.anim.fadeout);
         }
@@ -490,7 +528,6 @@ public class SubWebveiwActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(SubWebveiwActivity.this);
         // Set a title for alert dialog
         builder.setTitle("");
-
 
         // Show a message on alert dialog
         builder.setMessage(Message);
@@ -543,11 +580,13 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
     public void Norefresh(){
         now_refreshlayout  = false;
+        Log.d("nowrefre",String.valueOf(now_refreshlayout));
         subrefreshlayout.setEnabled(false);
     }
 
     public void Yesrefresh(){
         now_refreshlayout = true;
+        Log.d("nowrefre",String.valueOf(now_refreshlayout));
         subrefreshlayout.setEnabled(true);
     }
 

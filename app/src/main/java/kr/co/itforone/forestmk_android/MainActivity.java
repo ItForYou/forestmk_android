@@ -1,5 +1,6 @@
 package kr.co.itforone.forestmk_android;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -42,10 +43,15 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -133,7 +139,21 @@ public class MainActivity extends AppCompatActivity {
 
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
         }
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("D", "getInstanceId failed", task.getException());
+                            return;
+                        }
+                        // Get new Instance ID token
+                        token = task.getResult().getToken();
+                    }
+                });
 
         webView.setWebChromeClient(new ChromeManager(this,this));
         webView.setWebViewClient(new ViewManager(this, this));
@@ -147,9 +167,8 @@ public class MainActivity extends AppCompatActivity {
         settings.setDomStorageEnabled(true);//HTML5에서 DOM 사용여부
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);//캐시 사용모드 LOAD_NO_CACHE는 캐시를 사용않는다는 뜻
         settings.setTextZoom(100);       // 폰트크기 고정
-        ///settings.setUserAgentString(settings.getUserAgentString()+"//Brunei");
         webView.setWebContentsDebuggingEnabled(true);
-        webView.setLongClickable(true);
+       // webView.setLongClickable(true);
 
         SharedPreferences pref = getSharedPreferences("logininfo", MODE_PRIVATE);
         String id = pref.getString("id", "");
@@ -188,9 +207,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     Log.d("nowrefre",String.valueOf(now_refreshlayout));
-                    refreshlayout.setEnabled(false);
+                  //  refreshlayout.setEnabled(false);
                 }
-
             }
         });
 

@@ -37,7 +37,7 @@ class ViewManager extends WebViewClient {
         boolean lastchk = mainActivity.now_refreshlayout;
 
       if(url.contains("category.php") || url.contains("recent_list.php") || url.contains("mypage.php") ||  (url.contains("board.php")&&!url.contains("wr_id")) || url.contains("write.php")) {
-
+          Log.d("backpress_newintent",url);
           Intent intent = new Intent(mainActivity, SubWebveiwActivity.class);
           intent.putExtra("subview_url", url);
           intent.putExtra("before_refresh", lastchk);
@@ -78,7 +78,7 @@ class ViewManager extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-       // view.loadUrl("javascript:setToken('"+mainActivity.token+"')");
+        view.loadUrl("javascript:setToken('"+mainActivity.token+"')");
    /*    if(url.contains("login_check.php") || url.contains("write_update.php") || url.contains("register_form_update.php") || url.contains("write_comment_update.php")){
             mainActivity.webView.goBack();
         }*/
