@@ -4,13 +4,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
@@ -18,7 +16,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
@@ -30,18 +27,12 @@ import android.webkit.WebBackForwardList;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import java.io.IOException;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -59,6 +50,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
     static final int PERMISSION_REQUEST_CODE = 1;
     static final int CROP_FROM_ALBUM =2;
     static final int GET_ADDRESS =3;
+    static final int VIEW_REFRESH =4;
     public static LocationManager locationManager;
     public Location location;
     public Uri mImageCaptureUri,croppath;
@@ -311,6 +303,21 @@ public class SubWebveiwActivity extends AppCompatActivity {
                 }
                 break;
 
+            case VIEW_REFRESH:
+                        if(data!=null){
+
+                            boolean backflg_refresh = data.getExtras().getBoolean("refresh");
+                            Log.d("backpress_flg",String.valueOf(backflg_refresh));
+                            if(backflg_refresh==true) {
+                                webView.reload();
+                            }
+                            break;
+
+                        }
+                        else{
+                            break;
+                        }
+
         }
     }
 
@@ -467,6 +474,9 @@ public class SubWebveiwActivity extends AppCompatActivity {
                         webView.goBack();
                     }
                     else{
+                        Intent intent = new Intent();
+                        intent.putExtra("refresh",true);
+                        setResult(RESULT_OK,intent);
                         finish();
                         overridePendingTransition(R.anim.stay, R.anim.fadeout);
                     }
@@ -496,17 +506,22 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
         }
 
-        else if(backurl.contains("write_comment_update.php") || backurl.contains("delete_comment.php") || (webView.getUrl().contains("mypage")&& webView.getUrl().contains("compulsive")) ){
+        else if(backurl.contains("write_comment_update.php") || backurl.contains("delete_comment.php") ){
             Log.d("backpress_commentupdate", webView.getUrl());
             if(list.getSize()>2) {
+
                 Log.d("backpress_commif", webView.getUrl());
                 for(int i=0; i<list.getSize(); i++) {
                     webView.goBack();
                 }
+
             }
         }
 
-        else if(backurl.contains("write_update.php")) {
+        else if(backurl.contains("write_update.php") || (webView.getUrl().contains("mypage")&& webView.getUrl().contains("compulsive")) ) {
+            Intent intent = new Intent();
+            intent.putExtra("refresh",true);
+            setResult(RESULT_OK,intent);
             finish();
         }
 
@@ -518,6 +533,9 @@ public class SubWebveiwActivity extends AppCompatActivity {
         }
         else {
             Log.d("backpress_superback", webView.getUrl());
+            Intent intent = new Intent();
+            intent.putExtra("refresh",true);
+            setResult(RESULT_OK,intent);
             super.onBackPressed();
             overridePendingTransition(R.anim.stay, R.anim.fadeout);
         }

@@ -1,15 +1,14 @@
 package kr.co.itforone.forestmk_android;
 
-import android.app.Activity;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.webkit.WebBackForwardList;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
+
+
 
 class SubViewManager extends WebViewClient {
     SubWebveiwActivity context;
@@ -38,7 +37,7 @@ class SubViewManager extends WebViewClient {
             Intent intent = new Intent(context, SubWebveiwActivity.class);
             intent.putExtra("subview_url", url);
             intent.putExtra("before_refresh", lastchk);
-            context.startActivity(intent);
+            context.startActivityForResult(intent,context.VIEW_REFRESH);
             context.overridePendingTransition(R.anim.fadein, R.anim.stay);
             return true;
         }

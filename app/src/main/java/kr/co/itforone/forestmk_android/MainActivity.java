@@ -11,14 +11,12 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
@@ -26,33 +24,22 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.Toast;
-import android.widget.Toolbar;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -71,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     static final int PERMISSION_REQUEST_CODE = 1;
     static final int CROP_FROM_ALBUM =2;
     static final int GET_ADDRESS =3;
+    static final int VIEW_REFRESH =4;
     private LocationManager locationManager;
     private EndDialog mEndDialog;
     boolean gps_enabled = false, now_refreshlayout=true;
@@ -327,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Confirm_alert(String Message){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         // Set a title for alert dialog
         builder.setTitle("");
@@ -379,8 +368,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
     public void click_dialogN(View view){
       //  Toast.makeText(mContext.getApplicationContext(),"test",Toast.LENGTH_LONG).show();
         mEndDialog.dismiss();
@@ -406,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
                    //Toast.makeText(getApplicationContext(),"get_addr", Toast.LENGTH_LONG).show();
                 break;
             case ChromeManager.FILECHOOSER_LOLLIPOP_REQ_CODE:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
                     if (resultCode == RESULT_OK && webView.getUrl().contains("register_form.php")) {
                         if (data != null) {
                             //String dataString = data.getDataString();
@@ -473,7 +460,21 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                             break;
+            case VIEW_REFRESH:
 
+                            if(data!=null){
+
+                                boolean backflg_refresh = data.getExtras().getBoolean("refresh");
+                                Log.d("backpress_flg",String.valueOf(backflg_refresh));
+                                if(backflg_refresh==true) {
+                                    webView.reload();
+                                }
+                                break;
+
+                            }
+                            else{
+                                break;
+                            }
         }
     }
 

@@ -9,12 +9,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
-
 import androidx.annotation.RequiresApi;
-
-import java.util.Arrays;
-
 
 class ViewManager extends WebViewClient {
 
@@ -42,7 +37,8 @@ class ViewManager extends WebViewClient {
           intent.putExtra("subview_url", url);
           intent.putExtra("before_refresh", lastchk);
       //    Toast.makeText(mainActivity.getApplicationContext(),String.valueOf(mainActivity.now_refreshlayout), Toast.LENGTH_LONG).show();
-          mainActivity.startActivity(intent);
+
+          mainActivity.startActivityForResult(intent,mainActivity.VIEW_REFRESH);
           mainActivity.overridePendingTransition(R.anim.fadein, R.anim.stay);
           return true;
 

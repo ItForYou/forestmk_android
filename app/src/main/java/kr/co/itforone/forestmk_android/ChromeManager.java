@@ -11,7 +11,6 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.Toast;
 
 class ChromeManager extends WebChromeClient {
 
