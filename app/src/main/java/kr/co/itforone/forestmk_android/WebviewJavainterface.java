@@ -21,12 +21,6 @@ class WebviewJavainterface {
 
     }
 
-    public WebviewJavainterface(Activity activity){
-
-        this.activity=activity;
-
-    }
-
     @JavascriptInterface
     public void call(String number){
 

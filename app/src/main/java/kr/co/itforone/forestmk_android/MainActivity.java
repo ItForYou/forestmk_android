@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }else{
                     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                    /* LocationPosition.act=MainActivity.this;
                     LocationPosition.setPosition(this);
                     if(LocationPosition.lng==0.0){
