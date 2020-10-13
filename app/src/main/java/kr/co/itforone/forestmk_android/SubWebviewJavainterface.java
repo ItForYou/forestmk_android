@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 
@@ -107,6 +108,7 @@ class SubWebviewJavainterface {
                     activity.webView.goBack();
                 }
                 else {
+                    Log.d("backpress_interfaceback","now");
                     activity.onBackPressed();
                 }
 
@@ -142,6 +144,7 @@ class SubWebviewJavainterface {
 
     @JavascriptInterface
     public void setflgmodal4(int i) {
+        Log.d("backpress_","modal4");
         activity.flg_dclcommmodal=i;
     }
 

@@ -39,6 +39,7 @@ class SubViewManager extends WebViewClient {
             intent.putExtra("before_refresh", lastchk);
             context.startActivityForResult(intent,context.VIEW_REFRESH);
             context.overridePendingTransition(R.anim.fadein, R.anim.stay);
+            context.finish();
             return true;
         }
 

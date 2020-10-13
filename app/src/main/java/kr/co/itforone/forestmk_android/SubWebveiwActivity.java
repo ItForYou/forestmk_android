@@ -376,6 +376,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Log.d("backpress_true","now");
         WebBackForwardList list = null;
         String backurl ="";
 
@@ -398,6 +399,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
         if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
                 (backurl.contains("board.php") && backurl.contains("wr_id=")) || backurl.contains("mypage.php") ||
                 backurl.contains("login.php") || backurl.contains("mymap.php")) {
+
             Log.d("NoRefresh!!", webView.getUrl());
             Norefresh();
 
@@ -428,6 +430,12 @@ public class SubWebveiwActivity extends AppCompatActivity {
             webView.loadUrl("javascript:close_dclmd()");
 
         }
+        else if(flg_dclcommmodal!=0 && (webView.getUrl().contains("bo_table=deal")&&webView.getUrl().contains("wr_id="))){
+
+            Log.d("backpress_closemd4", webView.getUrl());
+            webView.loadUrl("javascript:close_declarecomm()");
+
+        }
         //if(webView.getUrl().equals(getString(R.string.home)))
         //Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
         else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2)) || webView.getUrl().contains("flg_snackbar=")){
@@ -446,11 +454,13 @@ public class SubWebveiwActivity extends AppCompatActivity {
             window.setLayout(x,y);
 
         }
+
         else if(webView.getUrl().contains("http://14.48.175.177/bbs/register_form.php?w=u")){
 
             Confirm_alert("수정을 취소하시겠습니까?");
 
         }
+
        else  if(webView.getUrl().contains("write.php")){
 
             AlertDialog.Builder builder = new AlertDialog.Builder(SubWebveiwActivity.this);
@@ -514,7 +524,6 @@ public class SubWebveiwActivity extends AppCompatActivity {
                 for(int i=0; i<list.getSize(); i++) {
                     webView.goBack();
                 }
-
             }
         }
 
@@ -533,10 +542,11 @@ public class SubWebveiwActivity extends AppCompatActivity {
         }
         else {
             Log.d("backpress_superback", webView.getUrl());
+
             Intent intent = new Intent();
             intent.putExtra("refresh",true);
             setResult(RESULT_OK,intent);
-            super.onBackPressed();
+            finish();
             overridePendingTransition(R.anim.stay, R.anim.fadeout);
         }
     }

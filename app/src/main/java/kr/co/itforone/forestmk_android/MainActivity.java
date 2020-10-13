@@ -246,6 +246,9 @@ public class MainActivity extends AppCompatActivity {
         else if(flg_dclmodal!=0 && (webView.getUrl().contains("bo_table=deal")&&webView.getUrl().contains("wr_id="))){
             webView.loadUrl("javascript:close_dclmd()");
         }
+        else if(flg_dclcommmodal!=0 && (webView.getUrl().contains("bo_table=deal")&&webView.getUrl().contains("wr_id="))){
+            webView.loadUrl("javascript:close_declarecomm()");
+        }
        else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2))){
             mEndDialog = new EndDialog(MainActivity.this);
             mEndDialog.setCancelable(true);
@@ -470,7 +473,6 @@ public class MainActivity extends AppCompatActivity {
                                     webView.reload();
                                 }
                                 break;
-
                             }
                             else{
                                 break;
