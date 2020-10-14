@@ -7,9 +7,6 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-
-
-
 class SubViewManager extends WebViewClient {
     SubWebveiwActivity context;
     MainActivity mainActivity;
@@ -27,19 +24,22 @@ class SubViewManager extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
       //  Toast.makeText(context.getApplicationContext(),"sub - " +url,Toast.LENGTH_LONG).show();
 
         boolean lastchk = context.now_refreshlayout;
         Log.d("backpress_should",url);
+
         if(url.contains("category.php") || url.contains("recent_list.php") || (url.contains("mypage.php") && !url.contains("compulsive"))
                 ||  (url.contains("board.php")&&!url.contains("wr_id") && !url.contains("compulsive"))  || (url.contains("write.php") && url.contains("deal"))  ) {
+
             Log.d("backpress_newintent",url);
+
             Intent intent = new Intent(context, SubWebveiwActivity.class);
             intent.putExtra("subview_url", url);
             intent.putExtra("before_refresh", lastchk);
             context.startActivityForResult(intent,context.VIEW_REFRESH);
             context.overridePendingTransition(R.anim.fadein, R.anim.stay);
-            context.finish();
             return true;
         }
 

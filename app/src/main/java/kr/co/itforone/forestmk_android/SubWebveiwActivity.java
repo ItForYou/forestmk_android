@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
@@ -33,6 +34,10 @@ import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.zhihu.matisse.Matisse;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -48,9 +53,12 @@ public class SubWebveiwActivity extends AppCompatActivity {
     ValueCallback<Uri[]> filePathCallbackLollipop;
     static final int FILECHOOSER_LOLLIPOP_REQ_CODE=1300;
     static final int PERMISSION_REQUEST_CODE = 1;
+
     static final int CROP_FROM_ALBUM =2;
     static final int GET_ADDRESS =3;
     static final int VIEW_REFRESH =4;
+    static final int MATTISSE_PICTURES =5;
+
     public static LocationManager locationManager;
     public Location location;
     public Uri mImageCaptureUri,croppath;
@@ -123,6 +131,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
         settings.setAppCacheEnabled(true);//캐쉬 사용여부
         settings.setDatabaseEnabled(true);//HTML5에서 db 사용여부 -> indexDB
         settings.setDomStorageEnabled(true);//HTML5에서 DOM 사용여부
+        settings.setUserAgentString("fing");
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);//캐시 사용모드 LOAD_NO_CACHE는 캐시를 사용않는다는 뜻
         settings.setTextZoom(100);       // 폰트크기 고정
         ///settings.setUserAgentString(settings.getUserAgentString()+"//Brunei");
@@ -229,10 +238,16 @@ public class SubWebveiwActivity extends AppCompatActivity {
                             //  ClipData clipData = data.getClipData();
                             Uri result = (data == null || resultCode != RESULT_OK) ? null : data.getData();
 
+
+
                             CropImage.activity(result)
                                     .setAspectRatio(1,1)//가로 세로 1:1로 자르기 기능 * 1:1 4:3 16:9로 정해져 있어요
                                     .setCropShape(CropImageView.CropShape.OVAL)
                                     .start(this);
+
+
+
+
 //                        if (clipData != null) {
 //                            result = new Uri[clipData.getItemCount()];
 //                            for (int i = 0; i < clipData.getItemCount(); i++) {
@@ -251,11 +266,13 @@ public class SubWebveiwActivity extends AppCompatActivity {
                     } else if (resultCode == RESULT_OK && !webView.getUrl().contains("register_form.php")) {
                         Uri[] result = null;
                         if (data != null) {
-                            //String dataString = data.getDataString();
+
                             ClipData clipData = data.getClipData();
                             if (clipData != null) {
                                 result = new Uri[clipData.getItemCount()];
                                 for (int i = 0; i < clipData.getItemCount(); i++) {
+
+                             //       Log.d("mselected2",  clipData.getItemAt(i).toString());
                                     ClipData.Item item = clipData.getItemAt(i);
                                     result[i] = item.getUri();
                                 }
@@ -263,6 +280,8 @@ public class SubWebveiwActivity extends AppCompatActivity {
                                 result = ChromeManager.FileChooserParams.parseResult(resultCode, data);
                                 //result = (data == null) ? new Uri[]{mCapturedImageURI} : WebChromeClient.FileChooserParams.parseResult(resultCode, data);
                             }
+
+
                             filePathCallbackLollipop.onReceiveValue(result);
                         } else {
                             filePathCallbackLollipop.onReceiveValue(null);
@@ -318,6 +337,8 @@ public class SubWebveiwActivity extends AppCompatActivity {
                             break;
                         }
 
+
+
         }
     }
 
@@ -350,6 +371,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
     }
 
     public void settingModal(){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("");
         builder.setMessage("핸드폰 위치를 켜주세요!");
@@ -376,6 +398,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
         Log.d("backpress_true","now");
         WebBackForwardList list = null;
         String backurl ="";
@@ -398,7 +421,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
         if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
                 (backurl.contains("board.php") && backurl.contains("wr_id=")) || backurl.contains("mypage.php") ||
-                backurl.contains("login.php") || backurl.contains("mymap.php")) {
+                backurl.contains("login.php") || backurl.contains("mymap.php") ) {
 
             Log.d("NoRefresh!!", webView.getUrl());
             Norefresh();
@@ -428,17 +451,19 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
             Log.d("backpress_closemd3", webView.getUrl());
             webView.loadUrl("javascript:close_dclmd()");
+            Norefresh();
 
         }
         else if(flg_dclcommmodal!=0 && (webView.getUrl().contains("bo_table=deal")&&webView.getUrl().contains("wr_id="))){
 
             Log.d("backpress_closemd4", webView.getUrl());
             webView.loadUrl("javascript:close_declarecomm()");
+            Norefresh();
 
         }
         //if(webView.getUrl().equals(getString(R.string.home)))
         //Toast.makeText(getApplicationContext(),webView.getUrl(),Toast.LENGTH_LONG).show();
-        else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2)) || webView.getUrl().contains("flg_snackbar=")){
+        else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2)) || webView.getUrl().contains("flg_snackbar=") ){
 
             mEndDialog = new EndDialog(SubWebveiwActivity.this);
             mEndDialog.setCancelable(true);
@@ -528,6 +553,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
         }
 
         else if(backurl.contains("write_update.php") || (webView.getUrl().contains("mypage")&& webView.getUrl().contains("compulsive")) ) {
+            Log.d("backpress_mypage", "true");
             Intent intent = new Intent();
             intent.putExtra("refresh",true);
             setResult(RESULT_OK,intent);
@@ -539,8 +565,10 @@ public class SubWebveiwActivity extends AppCompatActivity {
             //Toast.makeText(SubWebveiwActivity.this, backurl, Toast.LENGTH_SHORT).show();
             Log.d("backpress_url", backurl);
             webView.goBack();
+
         }
         else {
+
             Log.d("backpress_superback", webView.getUrl());
 
             Intent intent = new Intent();

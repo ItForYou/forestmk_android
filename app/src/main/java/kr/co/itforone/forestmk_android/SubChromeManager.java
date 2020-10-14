@@ -3,13 +3,20 @@ package kr.co.itforone.forestmk_android;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Button;
+
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
+import com.zhihu.matisse.filter.Filter;
 
 class SubChromeManager extends WebChromeClient {
 
@@ -17,6 +24,7 @@ class SubChromeManager extends WebChromeClient {
     SubWebveiwActivity activity;
     MainActivity mainActivity;
     static final int FILECHOOSER_LOLLIPOP_REQ_CODE=1300;
+    static final int MATTISSE_PICTURES=5;
 
     public SubChromeManager(SubWebveiwActivity activity, MainActivity mainActivity) {
         this.activity = activity;
@@ -30,13 +38,14 @@ class SubChromeManager extends WebChromeClient {
 
     @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-        activity.set_filePathCallbackLollipop(filePathCallback);
 
 //        Intent i = new Intent();
 //        i.addCategory(Intent.CATEGORY_OPENABLE);
 //        i.setType("*/*");
 //        i.setAction(Intent.ACTION_GET_CONTENT);
 //        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
+       activity.set_filePathCallbackLollipop(filePathCallback);
+
         Intent i;
 
         if(webView.getUrl().contains("register_form.php"))
@@ -45,12 +54,19 @@ class SubChromeManager extends WebChromeClient {
             i = new Intent(Intent.ACTION_GET_CONTENT);
 
         i.setType("image/*");
-        if(!webView.getUrl().contains("register_form.php"))
+       if(!webView.getUrl().contains("register_form.php"))
         i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
        // Create file chooser intent
 
         activity.startActivityForResult(i, FILECHOOSER_LOLLIPOP_REQ_CODE);
-
+    /*   Matisse.from(activity)
+                .choose(MimeType.ofAll())
+                .countable(true)
+                .maxSelectable(9)
+                .imageEngine(new GlideEngine())
+                .showPreview(false) // Default is `true`
+                .forResult(FILECHOOSER_LOLLIPOP_REQ_CODE);
+*/
         return true;
     }
 

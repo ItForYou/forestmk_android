@@ -45,8 +45,10 @@ import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity {
+
     @BindView(R.id.webView)    WebView webView;
     @BindView(R.id.refreshlayout)    SwipeRefreshLayout refreshlayout;
+
     String token = "";
     public int flg_refresh = 1;
     ValueCallback<Uri[]> filePathCallbackLollipop;
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         settings.setAppCacheEnabled(true);//캐쉬 사용여부
         settings.setDatabaseEnabled(true);//HTML5에서 db 사용여부 -> indexDB
         settings.setDomStorageEnabled(true);//HTML5에서 DOM 사용여부
+        settings.setUserAgentString("fing");
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);//캐시 사용모드 LOAD_NO_CACHE는 캐시를 사용않는다는 뜻
         settings.setTextZoom(100);       // 폰트크기 고정
         webView.setWebContentsDebuggingEnabled(true);
@@ -227,11 +230,12 @@ public class MainActivity extends AppCompatActivity {
         if(backurl.contains("register_form.php") || backurl.contains("password_lost.php") ||
                 (backurl.contains("board.php") && backurl.contains("wr_id=")) || backurl.contains("mypage.php") ||
                 backurl.contains("login.php") || backurl.contains("mymap.php")) {
-                    Log.d("NoRefresh!!", webView.getUrl());
+                    Log.d("backpress_NoRefresh!!", webView.getUrl());
                     Norefresh();
         }
+
         else{
-            Log.d("YesRefresh!!", webView.getUrl());
+            Log.d("backpress_YesRefresh!!", webView.getUrl());
             Yesrefresh();
         }
 
@@ -244,10 +248,16 @@ public class MainActivity extends AppCompatActivity {
             webView.loadUrl("javascript:close_sortmd("+flg_sortmodal+")");
         }
         else if(flg_dclmodal!=0 && (webView.getUrl().contains("bo_table=deal")&&webView.getUrl().contains("wr_id="))){
+
             webView.loadUrl("javascript:close_dclmd()");
+            Norefresh();
+
         }
         else if(flg_dclcommmodal!=0 && (webView.getUrl().contains("bo_table=deal")&&webView.getUrl().contains("wr_id="))){
+
             webView.loadUrl("javascript:close_declarecomm()");
+            Norefresh();
+
         }
        else if(webView.getUrl().equals(getString(R.string.home)) || webView.getUrl().equals(getString(R.string.home2))){
             mEndDialog = new EndDialog(MainActivity.this);
@@ -328,9 +338,12 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("확인",   new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if(webView.canGoBack()){
+
                     webView.goBack();
+
                 }
                 else{
+
                     mEndDialog = new EndDialog(MainActivity.this);
                     mEndDialog.setCancelable(true);
                     mEndDialog.show();
@@ -343,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
                     int y = (int)(size.y* 0.45f);
 
                     window.setLayout(x,y);
+
                 }
             }
 
