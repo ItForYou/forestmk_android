@@ -5,18 +5,22 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ClipData;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
@@ -28,14 +32,21 @@ import android.webkit.WebBackForwardList;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zhihu.matisse.Matisse;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import butterknife.BindView;
@@ -75,7 +86,7 @@ public class SubWebveiwActivity extends AppCompatActivity {
 
     private final int MY_PERMISSIONS_REQUEST_CAMERA=1001;
 
-    private boolean hasPermissions(String[] permissions) {
+    private boolean hasPermissions(String[] permissions){
         // 퍼미션 확인
         int result = -1;
         for (int i = 0; i < permissions.length; i++) {
@@ -192,8 +203,6 @@ public class SubWebveiwActivity extends AppCompatActivity {
             }
         });
 
-
-
         if(url.contains("mypage.php") || url.contains("login.php")){
 
             Norefresh();
@@ -217,13 +226,13 @@ public class SubWebveiwActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
             //광고 글쓰기 주소 검색
             case GET_ADDRESS:
-                if(resultCode==33) {
+                if(resultCode==33){
                     String data_address12 = data.getStringExtra("address12");
                     String data_address11 = data.getStringExtra("address11");
                     webView.loadUrl("javascript:set_wr12('" + data_address12 + "','"+data_address11+"')");
@@ -231,22 +240,18 @@ public class SubWebveiwActivity extends AppCompatActivity {
                 //Toast.makeText(getApplicationContext(),"get_addr", Toast.LENGTH_LONG).show();
                 break;
             case ChromeManager.FILECHOOSER_LOLLIPOP_REQ_CODE:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (resultCode == RESULT_OK && webView.getUrl().contains("register_form.php")) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                    if (resultCode == RESULT_OK && webView.getUrl().contains("register_form.php")){
                         if (data != null) {
                             //String dataString = data.getDataString();
                             //  ClipData clipData = data.getClipData();
-                            Uri result = (data == null || resultCode != RESULT_OK) ? null : data.getData();
-
-
-
-                            CropImage.activity(result)
+                           // Uri result = (data == null || resultCode != RESULT_OK) ? null : data.getData();
+                            List<Uri> matisse = Matisse.obtainResult(data);
+                         //   Log.d("mselected_stcrop",  matisse.get(0).toString());
+                            CropImage.activity(matisse.get(0))
                                     .setAspectRatio(1,1)//가로 세로 1:1로 자르기 기능 * 1:1 4:3 16:9로 정해져 있어요
                                     .setCropShape(CropImageView.CropShape.OVAL)
                                     .start(this);
-
-
-
 
 //                        if (clipData != null) {
 //                            result = new Uri[clipData.getItemCount()];
@@ -263,11 +268,20 @@ public class SubWebveiwActivity extends AppCompatActivity {
                             filePathCallbackLollipop.onReceiveValue(null);
                             filePathCallbackLollipop = null;
                         }
-                    } else if (resultCode == RESULT_OK && !webView.getUrl().contains("register_form.php")) {
-                        Uri[] result = null;
-                        if (data != null) {
+                    } else if (resultCode == RESULT_OK && !webView.getUrl().contains("register_form.php")){
 
-                            ClipData clipData = data.getClipData();
+                        if (data != null){
+
+                            List<Uri> matisse = Matisse.obtainResult(data);
+                            Uri[] result = new Uri[matisse.size()];
+                            for (int i = 0; i < matisse.size(); i++) {
+
+                              //  Log.d("mselected2",  matisse.get(i).toString());
+                                result[i] = matisse.get(i);
+
+                            }
+
+                       /*     ClipData clipData = data.getClipData();
                             if (clipData != null) {
                                 result = new Uri[clipData.getItemCount()];
                                 for (int i = 0; i < clipData.getItemCount(); i++) {
@@ -279,9 +293,8 @@ public class SubWebveiwActivity extends AppCompatActivity {
                             } else {
                                 result = ChromeManager.FileChooserParams.parseResult(resultCode, data);
                                 //result = (data == null) ? new Uri[]{mCapturedImageURI} : WebChromeClient.FileChooserParams.parseResult(resultCode, data);
-                            }
-
-
+                            }*/
+                          //  Log.d("mselected2_1",  result.toString());
                             filePathCallbackLollipop.onReceiveValue(result);
                         } else {
                             filePathCallbackLollipop.onReceiveValue(null);
@@ -331,14 +344,10 @@ public class SubWebveiwActivity extends AppCompatActivity {
                                 webView.reload();
                             }
                             break;
-
                         }
                         else{
                             break;
                         }
-
-
-
         }
     }
 

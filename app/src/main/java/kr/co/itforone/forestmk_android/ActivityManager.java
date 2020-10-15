@@ -35,7 +35,9 @@ public class ActivityManager {
 
     public void finishAllActivity() {
         for (Activity activity : activityList) {
+
             activity.finish();
+
         }
     }
 }

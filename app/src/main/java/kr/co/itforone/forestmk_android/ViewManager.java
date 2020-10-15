@@ -28,7 +28,7 @@ class ViewManager extends WebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url){
            // Toast.makeText(mainActivity.getApplicationContext(),"test-"+url, Toast.LENGTH_LONG).show();
-        Log.d("nowrefre",String.valueOf(mainActivity.now_refreshlayout));
+        Log.d("backpress_nowrefre",String.valueOf(mainActivity.now_refreshlayout));
         boolean lastchk = mainActivity.now_refreshlayout;
 
       if(url.contains("category.php") || url.contains("recent_list.php") || url.contains("mypage.php") ||  (url.contains("board.php")&&!url.contains("wr_id")) || url.contains("write.php")) {

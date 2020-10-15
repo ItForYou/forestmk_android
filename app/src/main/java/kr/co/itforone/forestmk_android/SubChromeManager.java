@@ -33,6 +33,7 @@ class SubChromeManager extends WebChromeClient {
     public SubChromeManager(SubWebveiwActivity activity) {
         this.activity = activity;
     }
+
     public SubChromeManager() {
     }
 
@@ -46,7 +47,7 @@ class SubChromeManager extends WebChromeClient {
 //        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
        activity.set_filePathCallbackLollipop(filePathCallback);
 
-        Intent i;
+  /*      Intent i;
 
         if(webView.getUrl().contains("register_form.php"))
             i =new Intent(Intent.ACTION_PICK);
@@ -58,15 +59,23 @@ class SubChromeManager extends WebChromeClient {
         i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
        // Create file chooser intent
 
-        activity.startActivityForResult(i, FILECHOOSER_LOLLIPOP_REQ_CODE);
-    /*   Matisse.from(activity)
+        activity.startActivityForResult(i, FILECHOOSER_LOLLIPOP_REQ_CODE);*/
+        int maxnum=1;
+
+        if(webView.getUrl().contains("register_form.php"))
+            maxnum=1;
+        else
+            maxnum=10;
+
+       Matisse.from(activity)
                 .choose(MimeType.ofAll())
                 .countable(true)
-                .maxSelectable(9)
+                .maxSelectable(maxnum)
                 .imageEngine(new GlideEngine())
-                .showPreview(false) // Default is `true`
+                .showPreview(true) // Default is `true`
+                .countable(false)
                 .forResult(FILECHOOSER_LOLLIPOP_REQ_CODE);
-*/
+
         return true;
     }
 
@@ -100,6 +109,7 @@ class SubChromeManager extends WebChromeClient {
         Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
         positiveButton.setTextColor(Color.parseColor("#9dc543"));
         return true;
+
     }
 
     @Override
